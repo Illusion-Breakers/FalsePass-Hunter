@@ -1,0 +1,247 @@
+/* Hero Section */
+.hero-section {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
+}
+
+.hero-gradient {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #001529 0%, #0a2540 50%, #177ddc 100%);
+  animation: gradientShift 15s ease infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes gradientShift {
+  0% {
+    background: linear-gradient(135deg, #001529 0%, #0a2540 50%, #177ddc 100%);
+  }
+  50% {
+    background: linear-gradient(135deg, #0a2540 0%, #177ddc 50%, #1890ff 100%);
+  }
+  100% {
+    background: linear-gradient(135deg, #001529 0%, #0a2540 50%, #177ddc 100%);
+  }
+}
+
+.hero-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  color: white;
+  animation: heroFadeIn 0.8s ease;
+}
+
+@keyframes heroFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-title {
+  font-size: 4rem;
+  font-weight: 800;
+  margin: 0 0 16px 0;
+  letter-spacing: -2px;
+  animation: slideDown 0.8s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-subtitle {
+  font-size: 1.8rem;
+  margin: 0 0 16px 0;
+  font-weight: 300;
+  letter-spacing: 1px;
+  animation: slideUp 0.8s ease 0.1s both;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.hero-description {
+  font-size: 1.1rem;
+  margin: 0 0 40px 0;
+  opacity: 0.9;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  animation: slideUp 0.8s ease 0.2s both;
+}
+
+/* Dark overlay for readability */
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 21, 41, 0.4);
+  z-index: 5;
+}
+
+/* Features Section */
+.features-section {
+  padding: 80px 32px;
+  background: #f0f2f5;
+}
+
+.section-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  text-align: center;
+  margin: 0;
+  color: #001529;
+}
+
+.section-subtitle {
+  font-size: 1.2rem;
+  text-align: center;
+  color: #666;
+  margin-top: 12px;
+  margin-bottom: 0;
+}
+
+.feature-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.feature-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  border-color: #1890ff;
+}
+
+/* Stats Section */
+.stats-section {
+  padding: 80px 32px;
+  background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+}
+
+/* Benefits Section */
+.benefits-section {
+  padding: 80px 32px;
+  background: white;
+}
+
+.benefits-section .section-title {
+  margin-bottom: 16px;
+}
+
+/* CTA Section */
+.cta-section {
+  padding: 100px 32px;
+  background: linear-gradient(135deg, #001a33 0%, #003a70 50%, #1890ff 100%);
+  animation: ctaPulse 20s ease-in-out infinite;
+}
+
+@keyframes ctaPulse {
+  0% {
+    background: linear-gradient(135deg, #001a33 0%, #003a70 50%, #1890ff 100%);
+  }
+  50% {
+    background: linear-gradient(135deg, #003a70 0%, #1890ff 50%, #1890ff 100%);
+  }
+  100% {
+    background: linear-gradient(135deg, #001a33 0%, #003a70 50%, #1890ff 100%);
+  }
+}
+
+.cta-section .section-container {
+  text-align: center;
+}
+
+.home-container {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+/* Scroll animation effects */
+@media (prefers-reduced-motion: no-preference) {
+  .feature-card {
+    animation: fadeInUp 0.6s ease forwards;
+    opacity: 0;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .feature-card:nth-child(1) { animation-delay: 0.1s; }
+  .feature-card:nth-child(2) { animation-delay: 0.2s; }
+  .feature-card:nth-child(3) { animation-delay: 0.3s; }
+  .feature-card:nth-child(4) { animation-delay: 0.4s; }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.5rem;
+  }
+
+  .hero-subtitle {
+    font-size: 1.2rem;
+  }
+
+  .hero-description {
+    font-size: 1rem;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+
+  .section-subtitle {
+    font-size: 1rem;
+  }
+
+  .features-section,
+  .stats-section,
+  .benefits-section,
+  .cta-section {
+    padding: 50px 20px;
+  }
+}
