@@ -42,69 +42,51 @@
 
 ## ✨ 功能特性
 
-<div align="center">
-
-| 🎯 | 📈 | 🔍 |
+| 🎯 真实数据驱动 | 📈 可视化分析 | 🔍 可解释性 |
 |:---:|:---:|:---:|
-| **真实数据驱动** | **可视化分析** | **可解释性** |
 | 基于 Kaggle UCI SECOM 真实制造数据 | 多维度图表展示风险趋势 | Evidence Chain 证据链追踪 |
 
-| 🔔 | 📄 | 🌐 |
+| 🔔 实时告警 | 📄 报告导出 | 🌐 跨平台 |
 |:---:|:---:|:---:|
-| **实时告警** | **报告导出** | **跨平台** |
 | 漂移监控与异常检测 | PDF 格式风险报告导出 | React + FastAPI 全栈架构 |
-
-</div>
 
 ---
 
 ## 🎯 页面总览
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        FalsePass Hunter                         │
-├─────────────┬─────────────┬─────────────┬─────────────┬─────────┤
-│  📊 Home    │  📈 Drift   │  🔀 Cross   │  ⚠️ Risk   │  📝 Log │
-│  主驾驶舱   │  漂移监控   │  跨工序分析 │  风险报告   │  日志分析│
-└─────────────┴─────────────┴─────────────┴─────────────┴─────────┘
-```
-
-| 页面 | 图标 | 作用 | 核心 API | 输出内容 |
-|:---|:---:|:---|:---|:---|
-| **Home** | 🏠 | 项目入口和导航 | - | 快速导航 |
-| **Dashboard** | 📊 | 主驾驶舱 | `/api/dashboard/summary` | 趋势图、站点概览、风险分布、证据链 |
-| **Drift Monitor** | 📈 | 漂移监控 | `/api/drift/summary` | 时间窗口漂移对比、异常事件 |
-| **Cross Stage** | 🔀 | 跨工序分析 | `/api/cross-stage/summary` | 工序间风险对比、关联分析 |
-| **Risk Report** | ⚠️ | 单样本报告 | `/api/risk/report` | 风险评分、证据摘要、PDF 导出 |
-| **Log Analysis** | 📝 | 日志分析 | `/api/log/analyze` | 结构化日志分析结果 |
+| 页面 | 作用 | 核心 API | 输出内容 |
+|------|------|----------|----------|
+| 🏠 **Home** | 项目入口和导航 | - | 快速导航 |
+| 📊 **Dashboard** | 主驾驶舱 | `/api/dashboard/summary` | 趋势图、站点概览、风险分布、证据链 |
+| 📈 **Drift Monitor** | 漂移监控 | `/api/drift/summary` | 时间窗口漂移对比、异常事件 |
+| 🔀 **Cross Stage** | 跨工序分析 | `/api/cross-stage/summary` | 工序间风险对比、关联分析 |
+| ⚠️ **Risk Report** | 单样本报告 | `/api/risk/report` | 风险评分、证据摘要、PDF 导出 |
+| 📝 **Log Analysis** | 日志分析 | `/api/log/analyze` | 结构化日志分析结果 |
 
 ---
 
 ## 🏗️ 项目架构
 
-```mermaid
-graph LR
-    A[📂 data/uci-secom.csv] --> B[🐍 FastAPI Backend]
-    B --> C[⚛️ React Frontend]
-    C --> D[📊 Dashboard]
-    C --> E[📈 Drift Monitor]
-    C --> F[🔀 Cross Stage]
-    C --> G[⚠️ Risk Report]
-    C --> H[📝 Log Analysis]
+```
+┌──────────────────┐
+│  data/uci-secom.csv│
+│   (1567×592 数据)  │
+└────────┬─────────┘
+         │
+         ▼
+┌──────────────────┐
+│  FastAPI Backend │
+│     (main.py)    │
+└────────┬─────────┘
+         │
+         ▼
+┌──────────────────┐
+│  React Frontend  │
+│   (6 个分析页面)    │
+└──────────────────┘
 ```
 
-### 数据流向
-
-```
-┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│   CSV 数据源   │ ──> │  FastAPI 处理  │ ──> │  React 展示层  │
-│  uci-secom.csv│     │   main.py    │     │    各页面组件   │
-└──────────────┘     └──────────────┘     └──────────────┘
-       │                      │                      │
-       ▼                      ▼                      ▼
-  1567 行 × 592 列        RESTful API           可视化图表
-  Time + Pass/Fail       JSON 响应             PDF 导出
-```
+**数据流向：** CSV 数据源 → FastAPI 处理 → React 展示层 → 可视化图表/PDF 导出
 
 ---
 
@@ -139,9 +121,9 @@ FalsePass-Hunter/
 
 ### 前置要求
 
-- **Node.js** >= 16.0.0
-- **Python** >= 3.9
-- **npm** >= 8.0.0
+- Node.js >= 16.0.0
+- Python >= 3.9
+- npm >= 8.0.0
 
 ### 1️⃣ 克隆项目
 
@@ -187,7 +169,7 @@ npm run dev
 ### 端点总览
 
 | 方法 | 端点 | 描述 | 参数 |
-|:---:|:---|:---|:---|
+|------|------|------|------|
 | `GET` | `/api/health` | 健康检查 | - |
 | `GET` | `/api/dashboard/summary` | 驾驶舱数据 | `station`, `timeRange` |
 | `GET` | `/api/drift/summary` | 漂移分析 | `station`, `timeRange` |
@@ -197,10 +179,8 @@ npm run dev
 
 ### 响应示例
 
-#### Dashboard Summary
-
 <details>
-<summary>点击查看响应结构</summary>
+<summary>Dashboard Summary 响应结构</summary>
 
 ```json
 {
@@ -231,7 +211,7 @@ npm run dev
 ### UCI SECOM 数据集
 
 | 属性 | 值 |
-|:---|:---|
+|------|-----|
 | **来源** | Kaggle - UCI SECOM |
 | **样本数** | 1,567 行 |
 | **特征数** | 592 列 |
@@ -267,15 +247,11 @@ npm run build
 
 ## 🛠️ 技术栈
 
-<div align="center">
-
-| 层级 | 技术 | 版本 |
-|:---:|:---|:---:|
-| **Frontend** | ![React](https://img.shields.io/badge/React-18.2-61DAFB?logo=react) ![Vite](https://img.shields.io/badge/Vite-5.x-646CFF?logo=vite) ![AntD](https://img.shields.io/badge/Ant_Design-5.x-0170FE?logo=ant-design) |
-| **Backend** | ![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?logo=fastapi) ![pandas](https://img.shields.io/badge/pandas-2.x-150458?logo=pandas) |
-| **Data** | ![Kaggle](https://img.shields.io/badge/Kaggle-UCI_SECOM-20BEFF?logo=kaggle) |
-
-</div>
+| 层级 | 技术 |
+|------|------|
+| **Frontend** | React 18.2 • Vite 5.x • Ant Design 5.x • Recharts • html2pdf.js |
+| **Backend** | FastAPI 0.100+ • pandas 2.x • numpy • uvicorn |
+| **Data** | Kaggle UCI SECOM |
 
 ---
 
@@ -284,9 +260,9 @@ npm run build
 我们欢迎各种形式的贡献！
 
 1. 🍴 Fork 本仓库
-2. 🌿 创建特性分支 (`git checkout -b feature/AmazingFeature`)
-3. 💾 提交更改 (`git commit -m 'Add some AmazingFeature'`)
-4. 🚀 推送到分支 (`git push origin feature/AmazingFeature`)
+2. 🌿 创建特性分支 `git checkout -b feature/AmazingFeature`
+3. 💾 提交更改 `git commit -m 'Add some AmazingFeature'`
+4. 🚀 推送到分支 `git push origin feature/AmazingFeature`
 5. 📝 创建 Pull Request
 
 ---

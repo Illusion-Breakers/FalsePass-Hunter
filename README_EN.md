@@ -42,69 +42,51 @@
 
 ## ✨ Features
 
-<div align="center">
-
-| 🎯 | 📈 | 🔍 |
+| 🎯 Real Data Driven | 📈 Visual Analytics | 🔍 Explainability |
 |:---:|:---:|:---:|
-| **Real Data Driven** | **Visual Analytics** | **Explainability** |
 | Built on Kaggle UCI SECOM dataset | Multi-dimensional risk visualization | Evidence Chain tracking |
 
-| 🔔 | 📄 | 🌐 |
+| 🔔 Real-time Alerts | 📄 Report Export | 🌐 Cross-platform |
 |:---:|:---:|:---:|
-| **Real-time Alerts** | **Report Export** | **Cross-platform** |
 | Drift monitoring & anomaly detection | PDF risk report generation | React + FastAPI full-stack |
-
-</div>
 
 ---
 
 ## 🎯 Page Overview
 
-```
-┌─────────────────────────────────────────────────────────────────┐
-│                        FalsePass Hunter                          │
-├─────────────┬─────────────┬─────────────┬─────────────┬─────────┤
-│  📊 Home    │  📈 Drift   │  🔀 Cross   │  ⚠️ Risk    │  📝 Log │
-│  Dashboard  │  Monitor    │  Stage      │  Report     │  Analysis│
-└─────────────┴─────────────┴─────────────┴─────────────┴─────────┘
-```
-
-| Page | Icon | Purpose | Core API | Output |
-|:---|:---:|:---|:---|:---|
-| **Home** | 🏠 | Entry point & navigation | - | Quick navigation |
-| **Dashboard** | 📊 | Main control panel | `/api/dashboard/summary` | Trends, station overview, risk distribution, evidence chain |
-| **Drift Monitor** | 📈 | Drift monitoring | `/api/drift/summary` | Time-window drift comparison, anomaly events |
-| **Cross Stage** | 🔀 | Cross-process analysis | `/api/cross-stage/summary` | Inter-stage risk comparison, correlation analysis |
-| **Risk Report** | ⚠️ | Sample-level report | `/api/risk/report` | Risk score, evidence summary, PDF export |
-| **Log Analysis** | 📝 | Log diagnostics | `/api/log/analyze` | Structured log analysis results |
+| Page | Purpose | Core API | Output |
+|------|---------|----------|--------|
+| 🏠 **Home** | Entry point & navigation | - | Quick navigation |
+| 📊 **Dashboard** | Main control panel | `/api/dashboard/summary` | Trends, station overview, risk distribution, evidence chain |
+| 📈 **Drift Monitor** | Drift monitoring | `/api/drift/summary` | Time-window drift comparison, anomaly events |
+| 🔀 **Cross Stage** | Cross-process analysis | `/api/cross-stage/summary` | Inter-stage risk comparison, correlation analysis |
+| ⚠️ **Risk Report** | Sample-level report | `/api/risk/report` | Risk score, evidence summary, PDF export |
+| 📝 **Log Analysis** | Log diagnostics | `/api/log/analyze` | Structured log analysis results |
 
 ---
 
 ## 🏗️ Architecture
 
-```mermaid
-graph LR
-    A[📂 data/uci-secom.csv] --> B[🐍 FastAPI Backend]
-    B --> C[⚛️ React Frontend]
-    C --> D[📊 Dashboard]
-    C --> E[📈 Drift Monitor]
-    C --> F[🔀 Cross Stage]
-    C --> G[⚠️ Risk Report]
-    C --> H[📝 Log Analysis]
+```
+┌──────────────────┐
+│  data/uci-secom.csv│
+│   (1567×592 data) │
+└────────┬─────────┘
+         │
+         ▼
+┌──────────────────┐
+│  FastAPI Backend │
+│     (main.py)    │
+└────────┬─────────┘
+         │
+         ▼
+┌──────────────────┐
+│  React Frontend  │
+│  (6 Analysis Pages)│
+└──────────────────┘
 ```
 
-### Data Flow
-
-```
-┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│  CSV Source   │ ──> │  FastAPI     │ ──> │  React UI    │
-│ uci-secom.csv│     │   main.py    │     │   Components  │
-└──────────────┘     └──────────────┘     └──────────────┘
-       │                      │                      │
-       ▼                      ▼                      ▼
-  1567 rows × 592 cols    RESTful API           Visualizations
-  Time + Pass/Fail        JSON Response         PDF Export
-```
+**Data Flow:** CSV Source → FastAPI Processing → React UI → Visualizations / PDF Export
 
 ---
 
@@ -139,9 +121,9 @@ FalsePass-Hunter/
 
 ### Prerequisites
 
-- **Node.js** >= 16.0.0
-- **Python** >= 3.9
-- **npm** >= 8.0.0
+- Node.js >= 16.0.0
+- Python >= 3.9
+- npm >= 8.0.0
 
 ### 1️⃣ Clone the Repository
 
@@ -187,7 +169,7 @@ npm run dev
 ### Endpoints Overview
 
 | Method | Endpoint | Description | Parameters |
-|:---:|:---|:---|:---|
+|--------|----------|-------------|------------|
 | `GET` | `/api/health` | Health check | - |
 | `GET` | `/api/dashboard/summary` | Dashboard data | `station`, `timeRange` |
 | `GET` | `/api/drift/summary` | Drift analysis | `station`, `timeRange` |
@@ -197,10 +179,8 @@ npm run dev
 
 ### Response Example
 
-#### Dashboard Summary
-
 <details>
-<summary>Click to view response structure</summary>
+<summary>Dashboard Summary Response Structure</summary>
 
 ```json
 {
@@ -231,7 +211,7 @@ npm run dev
 ### UCI SECOM Dataset
 
 | Attribute | Value |
-|:---|:---|
+|-----------|-------|
 | **Source** | Kaggle - UCI SECOM |
 | **Samples** | 1,567 rows |
 | **Features** | 592 columns |
@@ -267,15 +247,11 @@ npm run build
 
 ## 🛠️ Tech Stack
 
-<div align="center">
-
-| Layer | Technology | Version |
-|:---:|:---|:---:|
-| **Frontend** | ![React](https://img.shields.io/badge/React-18.2-61DAFB?logo=react) ![Vite](https://img.shields.io/badge/Vite-5.x-646CFF?logo=vite) ![AntD](https://img.shields.io/badge/Ant_Design-5.x-0170FE?logo=ant-design) |
-| **Backend** | ![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?logo=fastapi) ![pandas](https://img.shields.io/badge/pandas-2.x-150458?logo=pandas) |
-| **Data** | ![Kaggle](https://img.shields.io/badge/Kaggle-UCI_SECOM-20BEFF?logo=kaggle) |
-
-</div>
+| Layer | Technologies |
+|-------|--------------|
+| **Frontend** | React 18.2 • Vite 5.x • Ant Design 5.x • Recharts • html2pdf.js |
+| **Backend** | FastAPI 0.100+ • pandas 2.x • numpy • uvicorn |
+| **Data** | Kaggle UCI SECOM |
 
 ---
 
@@ -284,9 +260,9 @@ npm run build
 We welcome contributions of all kinds!
 
 1. 🍴 Fork the repository
-2. 🌿 Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. 💾 Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. 🚀 Push to the branch (`git push origin feature/AmazingFeature`)
+2. 🌿 Create a feature branch `git checkout -b feature/AmazingFeature`
+3. 💾 Commit your changes `git commit -m 'Add some AmazingFeature'`
+4. 🚀 Push to the branch `git push origin feature/AmazingFeature`
 5. 📝 Create a Pull Request
 
 ---
