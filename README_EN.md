@@ -68,25 +68,26 @@
 ## 🏗️ Architecture
 
 ```
-┌──────────────────┐
-│  data/uci-secom.csv│
-│   (1567×592 data) │
-└────────┬─────────┘
-         │
-         ▼
-┌──────────────────┐
-│  FastAPI Backend │
-│     (main.py)    │
-└────────┬─────────┘
-         │
-         ▼
-┌──────────────────┐
-│  React Frontend  │
-│  (6 Analysis Pages)│
-└──────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                        FalsePass Hunter                          │
+├─────────────┬─────────────┬─────────────┬─────────────┬─────────┤
+│  📊 Home    │  📈 Drift   │  🔀 Cross   │  ⚠️ Risk    │  📝 Log │
+│  Dashboard  │  Monitor    │  Stage      │  Report     │  Analysis│
+└─────────────┴─────────────┴─────────────┴─────────────┴─────────┘
 ```
 
-**Data Flow:** CSV Source → FastAPI Processing → React UI → Visualizations / PDF Export
+### Data Flow
+
+```
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│  CSV Source   │ ──> │  FastAPI     │ ──> │  React UI    │
+│ uci-secom.csv│     │   main.py    │     │   Components  │
+└──────────────┘     └──────────────┘     └──────────────┘
+       │                      │                      │
+       ▼                      ▼                      ▼
+  1567 rows × 592 cols    RESTful API           Visualizations
+  Time + Pass/Fail        JSON Response         PDF Export
+```
 
 ---
 
