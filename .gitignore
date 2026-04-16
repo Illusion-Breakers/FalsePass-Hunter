@@ -77,7 +77,6 @@ data/*.xlsx
 data/*.json
 uploads/
 !data/.gitkeep
-!data/uci-secom.csv
 !docs/.gitkeep
 
 # Runtime

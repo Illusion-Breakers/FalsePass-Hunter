@@ -32,7 +32,7 @@
 
 ### 步骤 2：推送代码到 GitHub
 
-在项目根目录执行：
+在项目根目录（`C:\Users\30906\Desktop\FalsePass-Hunter`）执行：
 
 ```bash
 # 初始化 git
