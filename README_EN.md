@@ -1,220 +1,303 @@
-# FalsePass Hunter AI 🔍
+# 🛡️ FalsePass Hunter
 
-## Hidden False Pass Detection System for Test Engineering
+> 🚀 **AI-Powered Manufacturing Quality Analytics Platform Built on Kaggle UCI SECOM Dataset**
 
-> **HackDKU 2026** | Track 3: Test Engineering (Luxshare)  
-> **Team:** Illusion-Breakers  
-> **Status:** Production Ready MVP
+<div align="center">
 
----
+[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
+[![React](https://img.shields.io/badge/React-18.2.0-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://react.dev/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Kaggle](https://img.shields.io/badge/Dataset-UCI%20SECOM-20BEFF?style=for-the-badge&logo=kaggle&logoColor=white)](https://www.kaggle.com/datasets)
+[![GitHub stars](https://img.shields.io/github/stars/Illusion-Breakers/FalsePass-Hunter?style=for-the-badge&logo=github)](https://github.com/Illusion-Breakers/FalsePass-Hunter)
 
-## 🎯 One-Line Story
+[📖 Docs](#-documentation) • [🚀 Quick Start](#-quick-start) • [📊 Features](#-features) • [🏗️ Architecture](#️-architecture) • [👥 Team](#-team)
 
-**"The most dangerous product in a factory is not the one that fails testing. It's the one that has problems but 'passed testing' anyway."**
-
----
-
-## 📋 What is FalsePass Hunter?
-
-FalsePass Hunter AI is an intelligent risk detection system designed for Test Engineering (TE) scenarios. Unlike traditional anomaly detection that focuses on failed boards, we specialize in catching **false passes** - products that pass all tests but actually have underlying defects.
-
-### Core Philosophy
-
-> We are not judging "pass/fail" results. We are auditing the **credibility of test results**.
+</div>
 
 ---
 
-## 🏗️ System Architecture
+## 📖 Table of Contents
+
+<details>
+<summary>Click to expand full table of contents</summary>
+
+- [✨ Features](#-features)
+- [🎯 Page Overview](#-page-overview)
+- [🏗️ Architecture](#️-architecture)
+- [📂 Project Structure](#-project-structure)
+- [🚀 Quick Start](#-quick-start)
+- [🔌 API Documentation](#-api-documentation)
+- [📊 Data Information](#-data-information)
+- [🧪 Testing & Validation](#-testing--validation)
+- [🛠️ Tech Stack](#️-tech-stack)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
+- [👥 Team](#-team)
+- [📬 Contact](#-contact)
+
+</details>
+
+---
+
+## ✨ Features
+
+| 🎯 Real Data Driven | 📈 Visual Analytics | 🔍 Explainability |
+|:---:|:---:|:---:|
+| Built on Kaggle UCI SECOM dataset | Multi-dimensional risk visualization | Evidence Chain tracking |
+
+| 🔔 Real-time Alerts | 📄 Report Export | 🌐 Cross-platform |
+|:---:|:---:|:---:|
+| Drift monitoring & anomaly detection | PDF risk report generation | React + FastAPI full-stack |
+
+---
+
+## 🎯 Page Overview
+
+| Page | Purpose | Core API | Output |
+|------|---------|----------|--------|
+| 🏠 **Home** | Entry point & navigation | - | Quick navigation |
+| 📊 **Dashboard** | Main control panel | `/api/dashboard/summary` | Trends, station overview, risk distribution, evidence chain |
+| 📈 **Drift Monitor** | Drift monitoring | `/api/drift/summary` | Time-window drift comparison, anomaly events |
+| 🔀 **Cross Stage** | Cross-process analysis | `/api/cross-stage/summary` | Inter-stage risk comparison, correlation analysis |
+| ⚠️ **Risk Report** | Sample-level report | `/api/risk/report` | Risk score, evidence summary, PDF export |
+| 📝 **Log Analysis** | Log diagnostics | `/api/log/analyze` | Structured log analysis results |
+
+---
+
+## 🏗️ Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    FalsePass Hunter AI                           │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                  │
-│  INPUT LAYER                                                     │
-│  ├─ ICT/FCT Test Logs                                            │
-│  ├─ Script Version History                                       │
-│  ├─ Threshold Configurations                                     │
-│  ├─ Rework Records                                               │
-│  ├─ Golden Samples/Waveforms                                     │
-│  └─ Engineering Notes                                            │
-│                                                                  │
-│  ANALYSIS ENGINE                                                 │
-│  ├─ 📐 Drift Monitor          (Threshold/Script Drift)          │
-│  ├─ 🔗 Cross-Stage Validator  (Test→Rework Correlation)         │
-│  ├─ 📝 Log Reasoning Agent    (LLM-powered Analysis)            │
-│  └─ 🔧 Fixture Health         (Predictive Maintenance)          │
-│                                                                  │
-│  OUTPUT LAYER                                                    │
-│  ├─ False Pass Risk Score (0-100)                               │
-│  ├─ Top-K Suspicious Test Items                                  │
-│  ├─ Root Cause Ranking (Script/Threshold/Fixture/Environment)   │
-│  └─ Actionable Recommendations                                   │
-│                                                                  │
-└─────────────────────────────────────────────────────────────────┘
+│                        FalsePass Hunter                          │
+├─────────────┬─────────────┬─────────────┬─────────────┬─────────┤
+│  📊 Home    │  📈 Drift   │  🔀 Cross   │  ⚠️ Risk    │  📝 Log │
+│  Dashboard  │  Monitor    │  Stage      │  Report     │  Analysis│
+└─────────────┴─────────────┴─────────────┴─────────────┴─────────┘
+```
+
+### Data Flow
+
+```
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│  CSV Source   │ ──> │  FastAPI     │ ──> │  React UI    │
+│ uci-secom.csv│     │   main.py    │     │   Components  │
+└──────────────┘     └──────────────┘     └──────────────┘
+       │                      │                      │
+       ▼                      ▼                      ▼
+  1567 rows × 592 cols    RESTful API           Visualizations
+  Time + Pass/Fail        JSON Response         PDF Export
 ```
 
 ---
 
-## 🚀 Key Innovations
-
-| # | Innovation | Description |
-|---|------------|-------------|
-| 1 | **False Pass Focus** | While others track fails, we track "passed but untrustworthy" |
-| 2 | **Credibility Assessment** | Upgrading from pass/fail to credibility scoring |
-| 3 | **Rework Feedback Loop** | Downstream anomalies train upstream risk perception |
-| 4 | **Hybrid Reasoning** | Numerical drift + Text analysis (logs, notes, versions) |
-| 5 | **Fixture Health** | Predictive maintenance based on usage & historical data |
-| 6 | **Threshold Optimization** | Data-driven threshold recommendations |
-
----
-
-## 📊 Live Dashboard Features
-
-### Core Metrics
-- **Today's Tests:** Total test count across all stations
-- **False Pass Detected:** Products flagged as high-risk false passes
-- **High Risk Alerts:** Stations requiring immediate attention
-- **System Confidence:** Overall AI confidence score
-
-### Real-Time Monitoring
-- Production line status with risk indicators
-- Fixture health prediction with remaining life
-- Drift detection timeline with version changes
-- Cross-stage correlation analysis
-
----
-
-## 🎨 Tech Stack
-
-### Frontend
-- **React 18** - UI Framework
-- **Ant Design 5** - Component Library
-- **Recharts** - Data Visualization
-- **React Router** - Navigation
-
-### Backend (Planned)
-- **FastAPI** - REST API
-- **PyTorch** - ML Models
-- **LLM Integration** - Log reasoning
-
-### Deployment
-- **Vite** - Build Tool
-- **Docker** - Containerization
-
----
-
-## 📁 Project Structure
+## 📂 Project Structure
 
 ```
 FalsePass-Hunter/
-├── src/
-│   ├── App.jsx              # Main application
-│   ├── components/          # Reusable components
-│   └── pages/               # Page components
-├── dist/
-│   └── index.html           # Standalone demo page
-├── docs/
-│   └── proposal.pdf         # Full proposal document
-├── package.json
-├── vite.config.js
-└── README.md
+├── 📄 README.md                 # Chinese documentation
+├── 📄 README_EN.md              # English documentation
+├── 📄 LICENSE                   # MIT License
+├── 📦 data/
+│   └── uci-secom.csv            # Kaggle UCI SECOM Dataset (1567×592)
+├── 🔧 backend/
+│   ├── main.py                  # FastAPI main application
+│   └── requirements.txt         # Python dependencies
+└── ⚛️ src/
+    ├── pages/                   # Page components
+    │   ├── Dashboard.jsx        # 📊 Main Dashboard
+    │   ├── DriftMonitor.jsx     # 📈 Drift Monitor
+    │   ├── CrossStage.jsx       # 🔀 Cross Stage Analysis
+    │   ├── RiskReport.jsx       # ⚠️ Risk Report
+    │   └── LogAnalysis.jsx      # 📝 Log Analysis
+    ├── components/              # Reusable components
+    ├── data/                    # Frontend data configuration
+    ├── styles/                  # Style files
+    └── App.jsx                  # Application entry point
 ```
 
 ---
 
-## 🎯 Use Cases
+## 🚀 Quick Start
 
-### For TE Engineers
-- Real-time false pass detection
-- Root cause analysis with AI explanations
-- Fixture health monitoring & predictions
-- Threshold optimization recommendations
+### Prerequisites
 
-### For Quality Managers
-- Production line risk dashboard
-- Historical trend analysis
-- Supplier quality correlation
-- Audit-ready reports
+- Node.js >= 16.0.0
+- Python >= 3.9
+- npm >= 8.0.0
 
-### For Process Optimization
-- Coverage gap identification
-- Redundant test elimination
-- CT (Cycle Time) reduction insights
-- NPI (New Product Introduction) support
-
----
-
-## 🏆 Award-Worthy Highlights
-
-| Dimension | Our Contribution |
-|-----------|------------------|
-| **Innovation** | False Pass visualization + Risk gauge + Sankey diagrams |
-| **Technical** | Recharts/ECharts + Ant Design + WebSocket real-time |
-| **Business Value** | TE-friendly UI + Explainable reports + Actionable insights |
-| **Completeness** | 5 complete pages + Real data + Interactive features |
-| **Presentation** | Industrial UI + Dynamic charts + Alert notifications |
-
----
-
-## 📖 How to Use
-
-### Quick Start (Standalone Demo)
-
-1. Open `dist/index.html` in any modern browser
-2. Navigate through sections: Problem → Solution → Modules → Demo
-3. View live dashboard preview with simulated data
-
-### Full Development Setup
+### 1️⃣ Clone the Repository
 
 ```bash
-# Navigate to project
-cd FalsePass-Hunter/src
+git clone https://github.com/Illusion-Breakers/FalsePass-Hunter.git
+cd FalsePass-Hunter
+```
 
-# Install dependencies
+### 2️⃣ Install Backend Dependencies
+
+```bash
+cd backend
+pip install -r requirements.txt
+```
+
+### 3️⃣ Start Backend Server
+
+```bash
+uvicorn main:app --reload --port 8000
+```
+
+> ✅ Verify backend at `http://localhost:8000/api/health`
+
+### 4️⃣ Install Frontend Dependencies
+
+```bash
+cd ../src
 npm install
+```
 
-# Start development server
+### 5️⃣ Start Frontend Dev Server
+
+```bash
 npm run dev
+```
 
-# Build for production
+> 🎉 Access the application at `http://localhost:3000`
+
+---
+
+## 🔌 API Documentation
+
+### Endpoints Overview
+
+| Method | Endpoint | Description | Parameters |
+|--------|----------|-------------|------------|
+| `GET` | `/api/health` | Health check | - |
+| `GET` | `/api/dashboard/summary` | Dashboard data | `station`, `timeRange` |
+| `GET` | `/api/drift/summary` | Drift analysis | `station`, `timeRange` |
+| `GET` | `/api/cross-stage/summary` | Cross-stage analysis | - |
+| `GET` | `/api/risk/report` | Risk report | `sampleId` |
+| `POST` | `/api/log/analyze` | Log analysis | `{ logText }` |
+
+### Response Example
+
+<details>
+<summary>Dashboard Summary Response Structure</summary>
+
+```json
+{
+  "metrics": {
+    "totalTested": 1567,
+    "falsePass": 42,
+    "riskAlerts": 15,
+    "confidence": 0.94
+  },
+  "trendData": [...],
+  "stations": [...],
+  "riskDistribution": {
+    "low": 850,
+    "medium": 500,
+    "high": 217
+  },
+  "provenance": "data/uci-secom.csv",
+  "evidenceChain": {...}
+}
+```
+
+</details>
+
+---
+
+## 📊 Data Information
+
+### UCI SECOM Dataset
+
+| Attribute | Value |
+|-----------|-------|
+| **Source** | Kaggle - UCI SECOM |
+| **Samples** | 1,567 rows |
+| **Features** | 592 columns |
+| **Key Fields** | `Time`, `Pass/Fail` |
+| **Data Type** | Semiconductor manufacturing sensor data |
+
+### Data Validation
+
+```bash
+# Verify data integrity
+cd backend
+python -c "import pandas as pd; df = pd.read_csv('data/uci-secom.csv'); print(f'Rows: {len(df)}, Cols: {len(df.columns)}')"
+```
+
+---
+
+## 🧪 Testing & Validation
+
+### Backend Health Check
+
+```bash
+curl http://localhost:8000/api/health
+```
+
+### Frontend Build Test
+
+```bash
+cd src
 npm run build
 ```
 
 ---
 
-## 🎤 Pitch Script
+## 🛠️ Tech Stack
 
-### Opening (30 seconds)
-> "Good afternoon, judges. We are Team Illusion-Breakers. The most dangerous product in a factory is not the one that fails testing—it's the one that has problems but 'passed testing' anyway. FalsePass Hunter AI exists to catch these dangerous slip-throughs."
-
-### Demo (2 minutes)
-> "Look at our dashboard—it shows real-time test credibility across all production lines. Click this high-risk alert to see details. Here's our Drift Monitor showing script version changes and threshold comparisons. This is our Cross-Stage Analysis using Sankey diagrams to show test-to-rework correlations..."
-
-### Closing (30 seconds)
-> "We're not increasing test coverage. We're making existing test results more credible. FalsePass Hunter AI: adding a layer of credibility review to every 'test passed' result."
+| Layer | Technologies |
+|-------|--------------|
+| **Frontend** | React 18.2 • Vite 5.x • Ant Design 5.x • Recharts • html2pdf.js |
+| **Backend** | FastAPI 0.100+ • pandas 2.x • numpy • uvicorn |
+| **Data** | Kaggle UCI SECOM |
 
 ---
 
-## 🤝 Team
+## 🤝 Contributing
 
-**Illusion-Breakers**  
-HackDKU 2026 | Track 3: Test Engineering
+We welcome contributions of all kinds!
+
+1. 🍴 Fork the repository
+2. 🌿 Create a feature branch `git checkout -b feature/AmazingFeature`
+3. 💾 Commit your changes `git commit -m 'Add some AmazingFeature'`
+4. 🚀 Push to the branch `git push origin feature/AmazingFeature`
+5. 📝 Create a Pull Request
 
 ---
 
 ## 📄 License
 
-This project is created for HackDKU 2026. All rights reserved.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-## 📞 Contact
+## 👥 Team
 
-- **GitHub:** [@Illusion-Breakers](https://github.com/orgs/Illusion-Breakers)
-- **Hackathon:** HackDKU 2026
-- **Track Sponsor:** Luxshare Precision
+<div align="center">
+
+**🎨 Illusion-Breakers**
+
+*Illuminating the truth through data*
+
+</div>
 
 ---
 
-*"The purpose of FalsePass Hunter AI is to make every 'test passed' result trustworthy."*
+## 📬 Contact
+
+- 📧 **GitHub**: [Illusion-Breakers/FalsePass-Hunter](https://github.com/Illusion-Breakers/FalsePass-Hunter)
+- 🐛 **Issues**: Submit issues on the Issues page
+- 💬 **Discussions**: Feel free to start discussions
+
+---
+
+<div align="center">
+
+**Made with ❤️ by Illusion-Breakers**
+
+[⬆️ Back to Top](#-falsepass-hunter)
+
+</div>
