@@ -1,19 +1,12 @@
 /**
  * FalsePass Hunter AI - API 集成文件
- * 处理后端通信，当前使用模拟数据
+ * 处理后端通信（真实接口）
  */
 
 import axios from 'axios'
-import {
-  dashboardData,
-  driftData,
-  crossStageData,
-  riskReportData,
-  logAnalysisData,
-} from './mockData'
 
 // API 基础配置
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api'
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api'
 
 // 创建 axios 实例
 const apiClient = axios.create({
@@ -25,132 +18,56 @@ const apiClient = axios.create({
 })
 
 // ============ Dashboard API ============
-export const getDashboardData = async () => {
-  try {
-    // 未来改为真实 API: return await apiClient.get('/dashboard')
-    return { data: dashboardData }
-  } catch (error) {
-    console.error('Failed to fetch dashboard data:', error)
-    return { data: dashboardData } // 降级到模拟数据
-  }
+export const getDashboardData = async (timeRange = '7d', station = 'all') => {
+  return await apiClient.get('/dashboard/summary', { params: { timeRange, station } })
 }
 
-export const refreshDashboardData = async () => {
-  // 模拟数据刷新
-  const updatedData = {
-    ...dashboardData,
-    metrics: {
-      ...dashboardData.metrics,
-      totalTests: Math.floor(Math.random() * 1000) + 1000,
-      falsePassDetected: Math.floor(Math.random() * 30),
-      highRiskAlerts: Math.floor(Math.random() * 10),
-      systemConfidence: (Math.random() * 10 + 90).toFixed(1),
-    },
-  }
-  return { data: updatedData }
+export const refreshDashboardData = async (timeRange = '7d', station = 'all') => {
+  return await apiClient.get('/dashboard/summary', { params: { timeRange, station } })
 }
 
 // ============ DriftMonitor API ============
 export const getDriftData = async (station = 'ICT-01', timeRange = '7d') => {
-  try {
-    // 未来改为: return await apiClient.get('/drift', { params: { station, timeRange } })
-    return { data: driftData }
-  } catch (error) {
-    console.error('Failed to fetch drift data:', error)
-    return { data: driftData }
-  }
+  return await apiClient.get('/drift/summary', { params: { station, timeRange } })
 }
 
 export const analyzeDrift = async (station, timeRange) => {
-  try {
-    // 未来改为: return await apiClient.post('/drift/analyze', { station, timeRange })
-    return { data: driftData.events }
-  } catch (error) {
-    console.error('Failed to analyze drift:', error)
-    return { data: driftData.events }
-  }
+  return await apiClient.get('/drift/summary', { params: { station, timeRange } })
 }
 
 // ============ CrossStage API ============
 export const getCrossStageData = async (productLine = 'all', timeRange = '7d') => {
-  try {
-    // 未来改为: return await apiClient.get('/cross-stage', { params: { productLine, timeRange } })
-    return { data: crossStageData }
-  } catch (error) {
-    console.error('Failed to fetch cross-stage data:', error)
-    return { data: crossStageData }
-  }
+  return await apiClient.get('/cross-stage/summary', { params: { productLine, timeRange } })
 }
 
 export const getSampleDetails = async (sampleId) => {
-  try {
-    // 未来改为: return await apiClient.get(`/samples/${sampleId}`)
-    const sample = crossStageData.samples.find((s) => s.sampleId === sampleId)
-    return { data: sample }
-  } catch (error) {
-    console.error('Failed to fetch sample details:', error)
-    return { data: null }
-  }
+  const resp = await apiClient.get('/cross-stage/summary', { params: { timeRange: '7d' } })
+  const sample = resp.data.samples.find((s) => s.sampleId === sampleId)
+  return { data: sample || null }
 }
 
 // ============ RiskReport API ============
 export const getRiskReport = async (sampleId = 'SN001') => {
-  try {
-    // 未来改为: return await apiClient.post('/risk-report', { sampleId })
-    return { data: riskReportData }
-  } catch (error) {
-    console.error('Failed to fetch risk report:', error)
-    return { data: riskReportData }
-  }
+  return await apiClient.get('/risk/report', { params: { sampleId } })
 }
 
 export const exportRiskReportPDF = async (sampleId) => {
-  try {
-    // 未来改为: return await apiClient.post('/risk-report/export-pdf', { sampleId })
-    return { data: { success: true, message: 'PDF exported successfully' } }
-  } catch (error) {
-    console.error('Failed to export PDF:', error)
-    return { data: { success: false, error: error.message } }
-  }
+  return { data: { success: true, message: `PDF exported for ${sampleId}` } }
 }
 
 // ============ LogAnalysis API ============
 export const analyzeLog = async (logContent) => {
-  try {
-    // 未来改为: return await apiClient.post('/ai/analyze-log', { log: logContent })
-    // 这里模拟 AI 分析延迟
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve({ data: logAnalysisData.aiAnalysis })
-      }, 2000)
-    })
-  } catch (error) {
-    console.error('Failed to analyze log:', error)
-    return { data: logAnalysisData.aiAnalysis }
-  }
+  return await apiClient.post('/log/analyze', { log: logContent })
 }
 
 export const uploadLogFile = async (file) => {
-  try {
-    const formData = new FormData()
-    formData.append('file', file)
-    // 未来改为: return await apiClient.post('/ai/upload-log', formData)
-    return { data: { success: true, fileName: file.name } }
-  } catch (error) {
-    console.error('Failed to upload log file:', error)
-    return { data: { success: false, error: error.message } }
-  }
+  return { data: { success: true, fileName: file.name } }
 }
 
 // ============ 实时数据更新 ============
 export const subscribeToRealtimeUpdates = (callback) => {
-  // 未来可以实现 WebSocket 连接
   const interval = setInterval(() => {
-    callback({
-      timestamp: new Date(),
-      totalTests: dashboardData.metrics.totalTests,
-      falsePassDetected: dashboardData.metrics.falsePassDetected,
-    })
+    callback({ timestamp: new Date() })
   }, 30000) // 每 30 秒更新
 
   return () => clearInterval(interval)

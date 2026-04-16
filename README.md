@@ -1,341 +1,326 @@
-# FalsePass Hunter AI 🔍
+# 🛡️ FalsePass Hunter
 
-**面向 TE（Test Engineering）的隐性漏测风险预警系统**
+> 🚀 **基于 Kaggle UCI SECOM 数据集的智能制造质量分析平台**
 
-[English](./README_EN.md) | **简体中文**
+<div align="center">
 
----
+[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
+[![React](https://img.shields.io/badge/React-18.2.0-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://react.dev/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Kaggle](https://img.shields.io/badge/Dataset-UCI%20SECOM-20BEFF?style=for-the-badge&logo=kaggle&logoColor=white)](https://www.kaggle.com/datasets)
+[![GitHub stars](https://img.shields.io/github/stars/Illusion-Breakers/FalsePass-Hunter?style=for-the-badge&logo=github)](https://github.com/Illusion-Breakers/FalsePass-Hunter)
 
-## 项目概述
+[📖 文档](#-文档) • [🚀 快速开始](#-快速开始) • [📊 功能特性](#-功能特性) • [🏗️ 项目架构](#️-项目架构) • [👥 团队](#-团队)
 
-### 问题定义
-
-在半导体、电子产品制造中，测试工程（TE）阶段面临一个关键难题：**假通过（False Pass）问题**。传统测试系统关注的是"产品是否通过测试"，但无法识别"已通过的测试结果是否可信"。
-
-**现象：**
-- ICT/FCT 测试全部通过 ✓
-- 产品进入后工位或客户端 ✗
-- 出现异常、返修或失效
-- 问题根源追溯困难
-
-**根本原因：**
-1. 测试脚本/阈值未及时更新（Drift）
-2. 夹具老化/接触不良（Fixture Degradation）
-3. 测试环境变化（Temperature、Humidity）
-4. 黄金样本/参考波形已过期
-5. 工程师操作差异或配置错误
-
-### 解决方案
-
-FalsePass Hunter AI 建立了一个**可信度评估体系**：
-
-- **不改变**现有的 ICT/FCT 测试流程
-- **增加**一层"这次通过是否可信"的风险评分
-- **关联**测试通过与后续返修的相关性，反向训练模型
-- **融合**数值漂移检测 + 文本分析（日志、备注、版本）
-- **提供**可执行的改进建议（加测、复测、维护）
+</div>
 
 ---
 
-## 核心功能模块
+## 📖 目录
 
-### 1. **Drift Monitor（漂移监控）**
-监控测试系统的五个关键维度与历史基线的偏离：
-- 测试脚本版本变化
-- 测试阈值调整
-- 参考波形更新时间
-- 测试环境参数（温度、湿度）
-- 统计分布（均值、标准差、覆盖率）
+<details>
+<summary>点击展开完整目录</summary>
 
-**输出:** Drift Score (0-100)，自动识别异常变化点
+- [✨ 功能特性](#-功能特性)
+- [🎯 页面总览](#-页面总览)
+- [🏗️ 项目架构](#️-项目架构)
+- [📂 项目结构](#-项目结构)
+- [🚀 快速开始](#-快速开始)
+- [🔌 API 文档](#-api-文档)
+- [📊 数据说明](#-数据说明)
+- [🧪 测试与验证](#-测试与验证)
+- [🛠️ 技术栈](#️-技术栈)
+- [🤝 贡献指南](#-贡献指南)
+- [📄 许可证](#-许可证)
+- [👥 团队](#-团队)
+- [📬 联系我们](#-联系我们)
 
----
-
-### 2. **Cross-Stage Validator（跨阶段验证器）**
-建立两层关联分析：
-
-**第一层：** 测试通过样本 → 后工位返修数据
-- 统计特性：通过率、返修率、关联系数
-- 时间序列：24小时/7天/30天趋势
-- 异常检测：概率异常与频率异常
-
-**第二层：** 产品级追踪
-- 同批/同工位产品对比
-- 返修原因分布（芯片、焊接、接触等）
-- 反向溯源至原始测试项
-
-**输出:** Cross-Stage Risk Score，可信度评分
+</details>
 
 ---
 
-### 3. **Log Reasoning Agent（日志推理引擎）**
-处理非结构化文本数据（工程日志、异常输出、维修备注）：
+## ✨ 功能特性
 
-- 版本记录解析
-- 异常代码识别（Error codes → 行为映射）
-- 关键词提取（"接触不良"、"参考波形"、"补偿值"）
-- 多模态关联（数值漂移 + 文本信号的同步性）
+<div align="center">
 
-**输出:** Text-based Risk Factors，权重化为最终分数
+| 🎯 | 📈 | 🔍 |
+|:---:|:---:|:---:|
+| **真实数据驱动** | **可视化分析** | **可解释性** |
+| 基于 Kaggle UCI SECOM 真实制造数据 | 多维度图表展示风险趋势 | Evidence Chain 证据链追踪 |
+
+| 🔔 | 📄 | 🌐 |
+|:---:|:---:|:---:|
+| **实时告警** | **报告导出** | **跨平台** |
+| 漂移监控与异常检测 | PDF 格式风险报告导出 | React + FastAPI 全栈架构 |
+
+</div>
 
 ---
 
-### 4. **Risk Scorer（风险分数器）**
-融合多源数据的风险评分模型：
+## 🎯 页面总览
 
 ```
-Final Risk Score = 
-  w1 × Drift_Score +
-  w2 × CrossStage_Score +
-  w3 × Text_Risk_Factor +
-  w4 × Fixture_Health_Index +
-  w5 × Temporal_Anomaly_Score
+┌─────────────────────────────────────────────────────────────────┐
+│                        FalsePass Hunter                         │
+├─────────────┬─────────────┬─────────────┬─────────────┬─────────┤
+│  📊 Home    │  📈 Drift   │  🔀 Cross   │  ⚠️ Risk   │  📝 Log │
+│  主驾驶舱   │  漂移监控   │  跨工序分析 │  风险报告   │  日志分析│
+└─────────────┴─────────────┴─────────────┴─────────────┴─────────┘
 ```
 
-- **0-20：** 低风险（绿色）→ 正常通过
-- **21-50：** 中风险（黄色）→ 建议加强监测
-- **51-80：** 高风险（橙色）→ 建议复测或补测
-- **81-100：** 极高风险（红色）→ 需要立即处理
+| 页面 | 图标 | 作用 | 核心 API | 输出内容 |
+|:---|:---:|:---|:---|:---|
+| **Home** | 🏠 | 项目入口和导航 | - | 快速导航 |
+| **Dashboard** | 📊 | 主驾驶舱 | `/api/dashboard/summary` | 趋势图、站点概览、风险分布、证据链 |
+| **Drift Monitor** | 📈 | 漂移监控 | `/api/drift/summary` | 时间窗口漂移对比、异常事件 |
+| **Cross Stage** | 🔀 | 跨工序分析 | `/api/cross-stage/summary` | 工序间风险对比、关联分析 |
+| **Risk Report** | ⚠️ | 单样本报告 | `/api/risk/report` | 风险评分、证据摘要、PDF 导出 |
+| **Log Analysis** | 📝 | 日志分析 | `/api/log/analyze` | 结构化日志分析结果 |
 
 ---
 
-### 5. **Action Copilot（行动助手）**
-根据风险分数与根因分析，生成结构化建议：
+## 🏗️ 项目架构
 
-| 风险源 | 建议行动 | 优先级 |
-|--------|---------|--------|
-| 测试脚本偏移 | 审视脚本版本、重新标准化 | P1 |
-| 阈值漂移 | 更新阈值参考值、抽样验证 | P1 |
-| 夹具问题 | 夹具点检、接触面清理、更换零件 | P2 |
-| 环境异常 | 调整 ECT、补偿系数 | P2 |
-| 黄金样本过期 | 更新参考波形、重建特征库 | P2 |
+```mermaid
+graph LR
+    A[📂 data/uci-secom.csv] --> B[🐍 FastAPI Backend]
+    B --> C[⚛️ React Frontend]
+    C --> D[📊 Dashboard]
+    C --> E[📈 Drift Monitor]
+    C --> F[🔀 Cross Stage]
+    C --> G[⚠️ Risk Report]
+    C --> H[📝 Log Analysis]
+```
 
----
-
-## 系统架构
+### 数据流向
 
 ```
-┌─────────────────────────────────────────────────────────────┐
-│               FalsePass Hunter AI - System Flow              │
-├─────────────────────────────────────────────────────────────┤
-│                                                              │
-│  INPUT SOURCES                                               │
-│  ├─ ICT/FCT Test Results (CSV/JSON from test equipment)     │
-│  ├─ Script Version & Threshold Logs                         │
-│  ├─ Golden Sample/Reference Waveform Database               │
-│  ├─ Environmental Data (Temp, Humidity, Press)              │
-│  ├─ Rework & Return Records (后工位数据)                     │
-│  └─ Engineering Notes & Error Logs (LLM Input)               │
-│                                                              │
-├─────────┬─────────┬─────────┬──────────┬─────────────────┤
-│         │         │         │          │                  │
-│  ANALYSIS ENGINES (Parallel Processing)                     │
-│         │         │         │          │                  │
-│    Drift        Cross       Log       Fixture   Temporal   │
-│   Monitor       Stage      Reason    Health    Anomaly    │
-│  & Threshold   Validator    Agent    Monitor   Detector   │
-│                                                             │
-│         │         │         │          │                  │
-├─────────┴─────────┴─────────┴──────────┴─────────────────┤
-│                                                              │
-│  RISK FUSION ENGINE                                          │
-│  → Weighted combination of all signals                       │
-│  → False Pass Risk Score (0-100)                             │
-│  → Top-K suspicious items ranked by impact                   │
-│  → Root cause ranking                                        │
-│                                                              │
-│  OUTPUT                                                      │
-│  ├─ Risk Dashboard (Real-time visualization)                │
-│  ├─ Detailed Risk Report (Exportable)                       │
-│  ├─ Action Recommendations (Prioritized)                    │
-│  ├─ Trend Analysis (24h/7d/30d)                             │
-│  └─ Alert Notifications (Critical cases)                    │
-│                                                              │
-└─────────────────────────────────────────────────────────────┘
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│   CSV 数据源   │ ──> │  FastAPI 处理  │ ──> │  React 展示层  │
+│  uci-secom.csv│     │   main.py    │     │    各页面组件   │
+└──────────────┘     └──────────────┘     └──────────────┘
+       │                      │                      │
+       ▼                      ▼                      ▼
+  1567 行 × 592 列        RESTful API           可视化图表
+  Time + Pass/Fail       JSON 响应             PDF 导出
 ```
 
 ---
 
-## 实时仪表盘功能
+## 📂 项目结构
 
-### 📊 核心指标卡片
-- **今日测试数量** - 各工位通过/失败/复测统计
-- **假通过检出** - 系统识别的可疑样本数
-- **高风险告警** - 需要立即处理的异常
-- **系统置信度** - 模型平均置信度分数
-
-### 📈 主要可视化
-- **生产线实时图** - 各工位的风险热力图和产率趋势
-- **Drift 时间序列** - 脚本、阈值、环境参数的变化轨迹
-- **跨阶段关联图** - Sankey 图展示测试→返修的流向
-- **夹具健康度** - 使用寿命预测和故障预警
-- **风险分布直方图** - 高风险样本按根因分类
-
-### 🎚️ 交互功能
-- 时间范围选择（24小时/7天/30天）
-- 工位/产品线过滤
-- 风险阈值动态调整
-- 导出为 CSV/PDF 报告
-
----
-
-## 技术栈
-
-### 前端
-- **React 18.3** - UI 框架，支持 Hooks 和并发渲染
-- **Ant Design 5** - 企业级 UI 组件库
-- **Recharts 2.10** - 响应式数据可视化
-- **React Router v6** - 应用路由管理
-- **Vite 5.4** - 高性能构建工具
-
-### 后端（规划中）
-- **FastAPI** - 高性能 Python Web 框架，支持异步
-- **PyTorch** - 机器学习模型训练与推理
-- **SQLAlchemy** - ORM 数据库抽象
-- **LLM API** - 日志分析和自然语言处理
-
-### 数据存储
-- **PostgreSQL** - 结构化测试数据与历史记录
-- **TimescaleDB** - 时间序列数据（环境参数、漂移指标）
-- **Redis** - 实时指标缓存与快速查询
+```
+FalsePass-Hunter/
+├── 📄 README.md                 # 中文说明文档
+├── 📄 README_EN.md              # English documentation
+├── 📄 LICENSE                   # MIT License
+├── 📦 data/
+│   └── uci-secom.csv            # Kaggle UCI SECOM 数据集 (1567×592)
+├── 🔧 backend/
+│   ├── main.py                  # FastAPI 主应用
+│   └── requirements.txt         # Python 依赖
+└── ⚛️ src/
+    ├── pages/                   # 页面组件
+    │   ├── Dashboard.jsx        # 📊 主驾驶舱
+    │   ├── DriftMonitor.jsx     # 📈 漂移监控
+    │   ├── CrossStage.jsx       # 🔀 跨工序分析
+    │   ├── RiskReport.jsx       # ⚠️ 风险报告
+    │   └── LogAnalysis.jsx      # 📝 日志分析
+    ├── components/              # 可复用组件
+    ├── data/                    # 前端数据配置
+    ├── styles/                  # 样式文件
+    └── App.jsx                  # 应用入口
+```
 
 ---
 
-## 快速开始
+## 🚀 快速开始
 
-### 环境要求
-- Node.js 16+
-- Python 3.9+
-- Git
+### 前置要求
 
-### 前端开发
+- **Node.js** >= 16.0.0
+- **Python** >= 3.9
+- **npm** >= 8.0.0
+
+### 1️⃣ 克隆项目
 
 ```bash
-cd src
-npm install
-npm run dev
+git clone https://github.com/Illusion-Breakers/FalsePass-Hunter.git
+cd FalsePass-Hunter
 ```
 
-前端应用将运行在 `http://localhost:3001`
-
-**可用命令：**
-- `npm run dev` - 开发服务器（热重载）
-- `npm run build` - 生产构建
-- `npm run preview` - 预览构建产物
-
-### 后端部署（开发中）
+### 2️⃣ 安装后端依赖
 
 ```bash
 cd backend
 pip install -r requirements.txt
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-API 文档访问: `http://localhost:8000/docs`
+### 3️⃣ 启动后端服务
 
----
-
-## 项目结构
-
-```
-FalsePass-Hunter/
-├── src/                           # React 前端应用
-│   ├── components/
-│   │   ├── MainLayout.jsx         # 主布局（侧边栏+内容区）
-│   │   ├── StatCard.jsx           # 数据卡片组件
-│   │   ├── TrendChart.jsx         # 趋势图表
-│   │   ├── RiskGauge.jsx          # 风险仪表盘
-│   │   └── index.js
-│   ├── pages/
-│   │   ├── Home.jsx               # 项目主页
-│   │   ├── Dashboard.jsx          # 实时监控仪表盘
-│   │   ├── DriftMonitor.jsx       # 漂移监控分析
-│   │   ├── CrossStage.jsx         # 跨阶段关联分析
-│   │   ├── RiskReport.jsx         # 风险报告生成
-│   │   └── LogAnalysis.jsx        # 日志分析（规划中）
-│   ├── data/
-│   │   ├── api.js                 # API 调用
-│   │   └── mockData.js            # 模拟数据
-│   ├── styles/
-│   │   ├── global.css             # 全局样式
-│   │   ├── home.css               # Home 页面样式
-│   │   └── variables.css          # CSS 变量
-│   ├── App.jsx                    # 主应用组件
-│   ├── main.jsx                   # 入口文件
-│   ├── index.html                 # HTML 模板
-│   ├── package.json               # 项目依赖
-│   └── vite.config.js             # Vite 构建配置
-│
-├── backend/                       # Python 后端（开发中）
-│   ├── main.py                    # FastAPI 主应用
-│   └── requirements.txt           # Python 依赖
-│
-├── docs/                          # 文档目录
-├── data/                          # 数据目录
-├── README.md                      # 中文项目说明
-├── README_EN.md                   # 英文项目说明
-├── DEPLOYMENT_GUIDE.md            # 部署指南
-└── .gitignore                     # Git 忽略规则
+```bash
+uvicorn main:app --reload --port 8000
 ```
 
----
+> ✅ 访问 `http://localhost:8000/api/health` 验证后端状态
 
-## 核心特性对比
+### 4️⃣ 安装前端依赖
 
-| 功能 | FalsePass Hunter | 传统测试系统 |
-|------|------------------|-------------|
-| 产品通过/失败判断 | ✓ | ✓ |
-| 风险可信度评分 | ✓ | ✗ |
-| 漂移监控 | ✓ | 手工 |
-| 跨阶段返修关联 | ✓ | 事后分析 |
-| 日志文本分析 | ✓ | ✗ |
-| 夹具预测维护 | ✓ | 定期维护 |
-| 可执行改进建议 | ✓ | 需要人工判断 |
+```bash
+cd ../src
+npm install
+```
 
----
+### 5️⃣ 启动前端开发服务器
 
-## 开发状态
+```bash
+npm run dev
+```
 
-### ✅ 已完成
-- [x] 前端仪表盘框架（React + Ant Design）
-- [x] 实时数据展示与交互
-- [x] 多维度风险可视化
-- [x] PDF/CSV 报告导出
-- [x] 响应式设计与主题支持
-
-### 🔄 进行中
-- [ ] 后端 API 开发（FastAPI）
-- [ ] 机器学习模型训练
-- [ ] 数据库设计与集成
-- [ ] LLM 日志分析模块
-
-### 📋 规划中
-- [ ] Kafka 实时数据流
-- [ ] 告警通知系统（Email/Slack）
-- [ ] 模型可解释性增强
-- [ ] 用户权限管理
+> 🎉 访问 `http://localhost:3000` 查看应用
 
 ---
 
-## 贡献指南
+## 🔌 API 文档
 
-我们欢迎社区贡献！请遵循以下步骤：
+### 端点总览
 
-1. Fork 本仓库
-2. 创建特性分支 (`git checkout -b feature/your-feature`)
-3. 提交更改 (`git commit -m 'Add your feature'`)
-4. 推送到分支 (`git push origin feature/your-feature`)
-5. 创建 Pull Request
+| 方法 | 端点 | 描述 | 参数 |
+|:---:|:---|:---|:---|
+| `GET` | `/api/health` | 健康检查 | - |
+| `GET` | `/api/dashboard/summary` | 驾驶舱数据 | `station`, `timeRange` |
+| `GET` | `/api/drift/summary` | 漂移分析 | `station`, `timeRange` |
+| `GET` | `/api/cross-stage/summary` | 跨工序分析 | - |
+| `GET` | `/api/risk/report` | 风险报告 | `sampleId` |
+| `POST` | `/api/log/analyze` | 日志分析 | `{ logText }` |
+
+### 响应示例
+
+#### Dashboard Summary
+
+<details>
+<summary>点击查看响应结构</summary>
+
+```json
+{
+  "metrics": {
+    "totalTested": 1567,
+    "falsePass": 42,
+    "riskAlerts": 15,
+    "confidence": 0.94
+  },
+  "trendData": [...],
+  "stations": [...],
+  "riskDistribution": {
+    "low": 850,
+    "medium": 500,
+    "high": 217
+  },
+  "provenance": "data/uci-secom.csv",
+  "evidenceChain": {...}
+}
+```
+
+</details>
 
 ---
 
-## 许可证
+## 📊 数据说明
 
-本项目采用 MIT 许可证。
+### UCI SECOM 数据集
+
+| 属性 | 值 |
+|:---|:---|
+| **来源** | Kaggle - UCI SECOM |
+| **样本数** | 1,567 行 |
+| **特征数** | 592 列 |
+| **关键字段** | `Time`, `Pass/Fail` |
+| **数据类型** | 半导体制造传感器数据 |
+
+### 数据验证
+
+```bash
+# 验证数据完整性
+cd backend
+python -c "import pandas as pd; df = pd.read_csv('data/uci-secom.csv'); print(f'Rows: {len(df)}, Cols: {len(df.columns)}')"
+```
 
 ---
 
-## 联系方式
+## 🧪 测试与验证
 
-**Illusion-Breakers 团队**  
-GitHub: [github.com/Illusion-Breakers](https://github.com/Illusion-Breakers)
+### 后端健康检查
+
+```bash
+curl http://localhost:8000/api/health
+```
+
+### 前端构建测试
+
+```bash
+cd src
+npm run build
+```
+
+---
+
+## 🛠️ 技术栈
+
+<div align="center">
+
+| 层级 | 技术 | 版本 |
+|:---:|:---|:---:|
+| **Frontend** | ![React](https://img.shields.io/badge/React-18.2-61DAFB?logo=react) ![Vite](https://img.shields.io/badge/Vite-5.x-646CFF?logo=vite) ![AntD](https://img.shields.io/badge/Ant_Design-5.x-0170FE?logo=ant-design) |
+| **Backend** | ![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?logo=fastapi) ![pandas](https://img.shields.io/badge/pandas-2.x-150458?logo=pandas) |
+| **Data** | ![Kaggle](https://img.shields.io/badge/Kaggle-UCI_SECOM-20BEFF?logo=kaggle) |
+
+</div>
+
+---
+
+## 🤝 贡献指南
+
+我们欢迎各种形式的贡献！
+
+1. 🍴 Fork 本仓库
+2. 🌿 创建特性分支 (`git checkout -b feature/AmazingFeature`)
+3. 💾 提交更改 (`git commit -m 'Add some AmazingFeature'`)
+4. 🚀 推送到分支 (`git push origin feature/AmazingFeature`)
+5. 📝 创建 Pull Request
+
+---
+
+## 📄 许可证
+
+本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
+
+---
+
+## 👥 团队
+
+<div align="center">
+
+**🎨 Illusion-Breakers**
+
+*用代码照亮数据的真相*
+
+</div>
+
+---
+
+## 📬 联系我们
+
+- 📧 **GitHub**: [Illusion-Breakers/FalsePass-Hunter](https://github.com/Illusion-Breakers/FalsePass-Hunter)
+- 🐛 **Issue**: 在项目 Issues 页面提交问题
+- 💬 **Discussion**: 欢迎在 Discussions 发起讨论
+
+---
+
+<div align="center">
+
+**Made with ❤️ by Illusion-Breakers**
+
+[⬆️ 返回顶部](#-falsepass-hunter)
+
+</div>

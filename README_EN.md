@@ -1,356 +1,326 @@
-# FalsePass Hunter AI 🔍
+# 🛡️ FalsePass Hunter
 
-## Hidden False Pass Detection System for Test Engineering
+> 🚀 **AI-Powered Manufacturing Quality Analytics Platform Built on Kaggle UCI SECOM Dataset**
 
-**[中文](./README.md) | English**
+<div align="center">
 
----
+[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](LICENSE)
+[![React](https://img.shields.io/badge/React-18.2.0-61DAFB?style=for-the-badge&logo=react&logoColor=white)](https://react.dev/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Kaggle](https://img.shields.io/badge/Dataset-UCI%20SECOM-20BEFF?style=for-the-badge&logo=kaggle&logoColor=white)](https://www.kaggle.com/datasets)
+[![GitHub stars](https://img.shields.io/github/stars/Illusion-Breakers/FalsePass-Hunter?style=for-the-badge&logo=github)](https://github.com/Illusion-Breakers/FalsePass-Hunter)
 
-## 📋 Overview
+[📖 Docs](#-documentation) • [🚀 Quick Start](#-quick-start) • [📊 Features](#-features) • [🏗️ Architecture](#️-architecture) • [👥 Team](#-team)
 
-### The False Pass Problem
-
-In semiconductor and electronics manufacturing, test engineering faces a critical challenge: **false pass detection**. Traditional test systems answer "does this product pass?", but cannot answer "is this pass result trustworthy?"
-
-**The Problem:**
-- ICT/FCT tests show all PASS ✓
-- Product fails in post-stage or at customer ✗
-- Difficult root cause analysis
-- Potential product liability
-
-**Root Causes:**
-1. Test script/threshold drift (outdated parameters)
-2. Fixture degradation (aging, contact stress)
-3. Environmental changes (temperature, humidity)
-4. Golden sample/waveform expiration
-5. Process variation and operator inconsistency
-
-### Our Solution
-
-FalsePass Hunter AI implements a **credibility assessment framework**:
-
-- **Non-disruptive** - Works with existing ICT/FCT workflows
-- **Risk Score** - Adds "is this pass trustworthy?" scoring layer
-- **Closed-loop** - Links test passes to downstream rework to retrain models
-- **Hybrid Analysis** - Combines numerical drift detection + text analysis (logs, notes, versions)
-- **Actionable** - Recommends specific corrective actions (add test, retest, maintenance)
+</div>
 
 ---
 
-## 🏗️ Core Analysis Modules
+## 📖 Table of Contents
 
-### 1. Drift Monitor
-Tracks divergence of 5 critical dimensions from historical baseline:
-- Test script version evolution
-- Threshold value adjustments
-- Reference waveform age
-- Environmental parameters (temp, humidity)
-- Statistical distribution shifts (mean, stdev, coverage)
+<details>
+<summary>Click to expand full table of contents</summary>
 
-**Output:** Drift Score (0-100) with anomaly detection
+- [✨ Features](#-features)
+- [🎯 Page Overview](#-page-overview)
+- [🏗️ Architecture](#️-architecture)
+- [📂 Project Structure](#-project-structure)
+- [🚀 Quick Start](#-quick-start)
+- [🔌 API Documentation](#-api-documentation)
+- [📊 Data Information](#-data-information)
+- [🧪 Testing & Validation](#-testing--validation)
+- [🛠️ Tech Stack](#️-tech-stack)
+- [🤝 Contributing](#-contributing)
+- [📄 License](#-license)
+- [👥 Team](#-team)
+- [📬 Contact](#-contact)
 
----
-
-### 2. Cross-Stage Validator
-Two-layer correlation analysis:
-
-**Layer 1:** Test Pass → Post-stage Rework Link
-- Statistical metrics: pass rate, rework rate, correlation coefficient
-- Time series: 24h / 7d / 30d trends
-- Anomaly detection: probability vs frequency
-
-**Layer 2:** Product-level Traceability
-- Same-batch / same-station product comparison
-- Rework reason distribution (chip, solder, contact)
-- Reverse traceability to original test items
-
-**Output:** Cross-Stage Risk Score with credibility metrics
+</details>
 
 ---
 
-### 3. Log Reasoning Agent
-Processes unstructured text (engineering logs, error messages, maintenance notes):
+## ✨ Features
 
-- Version history parsing
-- Error code classification (Error codes → symptom mapping)
-- Keyword extraction ("contact issue", "reference waveform", "compensation value")
-- Multi-modal correlation (numerical drift + text signal synchronization)
+<div align="center">
 
-**Output:** Text-based risk factors weighted into final score
+| 🎯 | 📈 | 🔍 |
+|:---:|:---:|:---:|
+| **Real Data Driven** | **Visual Analytics** | **Explainability** |
+| Built on Kaggle UCI SECOM dataset | Multi-dimensional risk visualization | Evidence Chain tracking |
+
+| 🔔 | 📄 | 🌐 |
+|:---:|:---:|:---:|
+| **Real-time Alerts** | **Report Export** | **Cross-platform** |
+| Drift monitoring & anomaly detection | PDF risk report generation | React + FastAPI full-stack |
+
+</div>
 
 ---
 
-### 4. Risk Scorer
-Multi-source risk scoring model:
+## 🎯 Page Overview
 
 ```
-Final Risk Score = 
-  w1 × Drift_Score +
-  w2 × CrossStage_Score +
-  w3 × Text_Risk_Factor +
-  w4 × Fixture_Health_Index +
-  w5 × Temporal_Anomaly_Score
+┌─────────────────────────────────────────────────────────────────┐
+│                        FalsePass Hunter                          │
+├─────────────┬─────────────┬─────────────┬─────────────┬─────────┤
+│  📊 Home    │  📈 Drift   │  🔀 Cross   │  ⚠️ Risk    │  📝 Log │
+│  Dashboard  │  Monitor    │  Stage      │  Report     │  Analysis│
+└─────────────┴─────────────┴─────────────┴─────────────┴─────────┘
 ```
 
-- **0-20:** Low Risk (Green) → Normal pass, no action
-- **21-50:** Medium Risk (Yellow) → Enhanced monitoring recommended
-- **51-80:** High Risk (Orange) → Retest or additional testing advised
-- **81-100:** Critical Risk (Red) → Immediate investigation required
+| Page | Icon | Purpose | Core API | Output |
+|:---|:---:|:---|:---|:---|
+| **Home** | 🏠 | Entry point & navigation | - | Quick navigation |
+| **Dashboard** | 📊 | Main control panel | `/api/dashboard/summary` | Trends, station overview, risk distribution, evidence chain |
+| **Drift Monitor** | 📈 | Drift monitoring | `/api/drift/summary` | Time-window drift comparison, anomaly events |
+| **Cross Stage** | 🔀 | Cross-process analysis | `/api/cross-stage/summary` | Inter-stage risk comparison, correlation analysis |
+| **Risk Report** | ⚠️ | Sample-level report | `/api/risk/report` | Risk score, evidence summary, PDF export |
+| **Log Analysis** | 📝 | Log diagnostics | `/api/log/analyze` | Structured log analysis results |
 
 ---
 
-### 5. Action Copilot
-Generates structured recommendations based on risk score and root cause analysis:
+## 🏗️ Architecture
 
-| Risk Source | Recommended Action | Priority |
-|-------------|-------------------|----------|
-| Script drift | Review script version, normalize parameters | P1 |
-| Threshold shift | Update reference values, validate samples | P1 |
-| Fixture issues | Fixture inspection, contact cleaning, component replacement | P2 |
-| Environmental anomaly | ECT adjustment, apply compensation | P2 |
-| Golden sample expiration | Update reference waveforms, rebuild feature library | P2 |
+```mermaid
+graph LR
+    A[📂 data/uci-secom.csv] --> B[🐍 FastAPI Backend]
+    B --> C[⚛️ React Frontend]
+    C --> D[📊 Dashboard]
+    C --> E[📈 Drift Monitor]
+    C --> F[🔀 Cross Stage]
+    C --> G[⚠️ Risk Report]
+    C --> H[📝 Log Analysis]
+```
 
----
+### Data Flow
 
-## 📊 Real-Time Dashboard
-
-### Key Metrics
-- **Daily Test Volume** - Pass/Fail/Retest counts by station
-- **False Pass Detection** - High-risk products flagged
-- **Critical Alerts** - Stations requiring immediate attention
-- **System Confidence** - Overall AI model confidence score
-
-### Visualizations
-- **Production Line Map** - Risk heat map and yield trends
-- **Drift Timeline** - Script, threshold, and environmental parameter changes
-- **Cross-Stage Flow** - Sankey diagram showing test-to-rework correlation
-- **Fixture Health** - Remaining life prediction and failure warnings
-- **Risk Distribution** - High-risk samples categorized by root cause
-
-### Interactive Features
-- Time range selection (24h / 7d / 30d)
-- Station/product line filtering
-- Dynamic risk threshold adjustment
-- CSV/PDF report export
+```
+┌──────────────┐     ┌──────────────┐     ┌──────────────┐
+│  CSV Source   │ ──> │  FastAPI     │ ──> │  React UI    │
+│ uci-secom.csv│     │   main.py    │     │   Components  │
+└──────────────┘     └──────────────┘     └──────────────┘
+       │                      │                      │
+       ▼                      ▼                      ▼
+  1567 rows × 592 cols    RESTful API           Visualizations
+  Time + Pass/Fail        JSON Response         PDF Export
+```
 
 ---
 
-## 🎨 Technology Stack
-
-### Frontend
-- **React 18.3** - Modern UI framework with hooks and concurrent rendering
-- **Ant Design 5** - Enterprise-grade component library
-- **Recharts 2.10** - Responsive data visualization library
-- **React Router v6** - Client-side routing
-- **Vite 5.4** - Next-generation build tool
-
-### Backend (Planned)
-- **FastAPI** - High-performance async Python framework
-- **PyTorch** - ML model training and inference
-- **SQLAlchemy** - Database ORM
-- **LLM APIs** - Natural language log analysis
-
-### Data Layer
-- **PostgreSQL** - Structured test data and history
-- **TimescaleDB** - Time-series data (environmental data, drift metrics)
-- **Redis** - In-memory cache for real-time metrics
-
----
-
-## 📁 Project Structure
+## 📂 Project Structure
 
 ```
 FalsePass-Hunter/
-├── src/                           # React Frontend
-│   ├── pages/
-│   │   ├── Home.jsx               # Landing page
-│   │   ├── Dashboard.jsx          # Real-time monitoring dashboard
-│   │   ├── DriftMonitor.jsx       # Drift analysis
-│   │   ├── CrossStage.jsx         # Cross-stage correlation analysis
-│   │   ├── RiskReport.jsx         # Report generation
-│   │   └── LogAnalysis.jsx        # Log reasoning (planned)
-│   ├── components/
-│   │   ├── MainLayout.jsx         # Main layout wrapper
-│   │   ├── StatCard.jsx           # Metric cards
-│   │   ├── TrendChart.jsx         # Trend visualization
-│   │   ├── RiskGauge.jsx          # Risk gauge component
-│   │   └── index.js
-│   ├── data/
-│   │   ├── api.js                 # API client
-│   │   └── mockData.js            # Mock data for demo
-│   ├── styles/
-│   │   ├── global.css             # Global styles
-│   │   ├── home.css               # Home page styles
-│   │   └── variables.css          # CSS variables (colors, spacing)
-│   ├── App.jsx                    # Root component
-│   ├── main.jsx                   # Entry point
-│   ├── index.html                 # HTML template
-│   ├── package.json               # Dependencies
-│   └── vite.config.js             # Build configuration
-│
-├── backend/                       # Python Backend (WIP)
-│   ├── main.py                    # FastAPI application
-│   └── requirements.txt           # Python dependencies
-│
-├── docs/                          # Documentation
-├── data/                          # Data directory
-├── README.md                      # Chinese documentation
-├── README_EN.md                   # English documentation
-├── DEPLOYMENT_GUIDE.md            # Deployment guide
-└── .gitignore                     # Git ignore rules
+├── 📄 README.md                 # Chinese documentation
+├── 📄 README_EN.md              # English documentation
+├── 📄 LICENSE                   # MIT License
+├── 📦 data/
+│   └── uci-secom.csv            # Kaggle UCI SECOM Dataset (1567×592)
+├── 🔧 backend/
+│   ├── main.py                  # FastAPI main application
+│   └── requirements.txt         # Python dependencies
+└── ⚛️ src/
+    ├── pages/                   # Page components
+    │   ├── Dashboard.jsx        # 📊 Main Dashboard
+    │   ├── DriftMonitor.jsx     # 📈 Drift Monitor
+    │   ├── CrossStage.jsx       # 🔀 Cross Stage Analysis
+    │   ├── RiskReport.jsx       # ⚠️ Risk Report
+    │   └── LogAnalysis.jsx      # 📝 Log Analysis
+    ├── components/              # Reusable components
+    ├── data/                    # Frontend data configuration
+    ├── styles/                  # Style files
+    └── App.jsx                  # Application entry point
 ```
 
 ---
 
-## Getting Started
+## 🚀 Quick Start
 
 ### Prerequisites
-- Node.js 16+
-- Python 3.9+ (for backend)
-- Git
 
-### Frontend Development
+- **Node.js** >= 16.0.0
+- **Python** >= 3.9
+- **npm** >= 8.0.0
+
+### 1️⃣ Clone the Repository
 
 ```bash
-cd src
-npm install
-npm run dev
+git clone https://github.com/Illusion-Breakers/FalsePass-Hunter.git
+cd FalsePass-Hunter
 ```
 
-Frontend runs at `http://localhost:3001`
-
-**Available commands:**
-- `npm run dev` - Development server with hot reload
-- `npm run build` - Production build
-- `npm run preview` - Preview production build
-
-### Backend Setup (In Development)
+### 2️⃣ Install Backend Dependencies
 
 ```bash
 cd backend
 pip install -r requirements.txt
-uvicorn main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-API documentation: `http://localhost:8000/docs`
+### 3️⃣ Start Backend Server
+
+```bash
+uvicorn main:app --reload --port 8000
+```
+
+> ✅ Verify backend at `http://localhost:8000/api/health`
+
+### 4️⃣ Install Frontend Dependencies
+
+```bash
+cd ../src
+npm install
+```
+
+### 5️⃣ Start Frontend Dev Server
+
+```bash
+npm run dev
+```
+
+> 🎉 Access the application at `http://localhost:3000`
 
 ---
 
-## Data Integration
+## 🔌 API Documentation
 
-### Supported Data Sources
-- **UCI SECOM Dataset** - Semiconductor manufacturing process control data
-- **WM-811K** - Wafer defect classification dataset
-- **Enterprise ICT/FCT logs** - Direct test equipment integration
-- **Rework and return records** - Post-stage quality data
+### Endpoints Overview
 
-### API Specifications
+| Method | Endpoint | Description | Parameters |
+|:---:|:---|:---|:---|
+| `GET` | `/api/health` | Health check | - |
+| `GET` | `/api/dashboard/summary` | Dashboard data | `station`, `timeRange` |
+| `GET` | `/api/drift/summary` | Drift analysis | `station`, `timeRange` |
+| `GET` | `/api/cross-stage/summary` | Cross-stage analysis | - |
+| `GET` | `/api/risk/report` | Risk report | `sampleId` |
+| `POST` | `/api/log/analyze` | Log analysis | `{ logText }` |
 
-**Upload test results:**
-```bash
-POST /api/v1/test-results
+### Response Example
+
+#### Dashboard Summary
+
+<details>
+<summary>Click to view response structure</summary>
+
+```json
 {
-  "station_id": "ICT-01",
-  "batch_id": "BATCH-2024-001",
-  "timestamp": "2024-04-15T10:30:00Z",
-  "test_items": [
-    {"name": "Voltage", "value": 4.98, "min": 4.75, "max": 5.25, "pass": true},
-    {"name": "Current", "value": 0.52, "min": 0.40, "max": 0.60, "pass": true}
-  ],
-  "script_version": "v2.3.1",
-  "environment": {"temperature": 22.5, "humidity": 45}
+  "metrics": {
+    "totalTested": 1567,
+    "falsePass": 42,
+    "riskAlerts": 15,
+    "confidence": 0.94
+  },
+  "trendData": [...],
+  "stations": [...],
+  "riskDistribution": {
+    "low": 850,
+    "medium": 500,
+    "high": 217
+  },
+  "provenance": "data/uci-secom.csv",
+  "evidenceChain": {...}
 }
 ```
 
-**Get risk assessment:**
-```bash
-GET /api/v1/risk-score/{product_id}
+</details>
 
-{
-  "product_id": "PRD-0001",
-  "risk_score": 72,
-  "risk_level": "high",
-  "root_causes": [
-    {"cause": "script_drift", "weight": 0.35},
-    {"cause": "threshold_shift", "weight": 0.28}
-  ],
-  "recommendations": ["Review script v2.3.1", "Update threshold +2%"]
-}
+---
+
+## 📊 Data Information
+
+### UCI SECOM Dataset
+
+| Attribute | Value |
+|:---|:---|
+| **Source** | Kaggle - UCI SECOM |
+| **Samples** | 1,567 rows |
+| **Features** | 592 columns |
+| **Key Fields** | `Time`, `Pass/Fail` |
+| **Data Type** | Semiconductor manufacturing sensor data |
+
+### Data Validation
+
+```bash
+# Verify data integrity
+cd backend
+python -c "import pandas as pd; df = pd.read_csv('data/uci-secom.csv'); print(f'Rows: {len(df)}, Cols: {len(df.columns)}')"
 ```
 
 ---
 
-## Feature Comparison
+## 🧪 Testing & Validation
 
-| Feature | FalsePass Hunter | Traditional Test Systems |
-|---------|-----------------|--------------------------|
-| Pass/Fail detection | ✓ | ✓ |
-| Risk credibility scoring | ✓ | ✗ |
-| Drift monitoring | ✓ | Manual |
-| Cross-stage rework correlation | ✓ | Post-analysis only |
-| Unstructured log analysis | ✓ | ✗ |
-| Fixture predictive maintenance | ✓ | Periodic maintenance |
-| Automatic improvement suggestions | ✓ | Manual engineering |
+### Backend Health Check
 
----
+```bash
+curl http://localhost:8000/api/health
+```
 
-## Development Status
+### Frontend Build Test
 
-### ✅ Completed
-- [x] Frontend dashboard (React + Ant Design)
-- [x] Real-time data visualization
-- [x] Multi-dimensional risk display
-- [x] PDF/CSV report export
-- [x] Responsive design
-
-### 🔄 In Progress
-- [ ] Backend API (FastAPI)
-- [ ] ML model training
-- [ ] Database schema and integration
-- [ ] LLM-powered log analysis
-
-### 📋 Planned
-- [ ] Kafka event streaming
-- [ ] Alert notification system (Email/Slack)
-- [ ] Model interpretability features
-- [ ] Role-based access control
-- [ ] Multi-language UI
+```bash
+cd src
+npm run build
+```
 
 ---
 
-## Contributing
+## 🛠️ Tech Stack
 
-We welcome community contributions. Please:
+<div align="center">
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/your-feature`)
-3. Commit changes (`git commit -m 'Add your feature'`)
-4. Push to branch (`git push origin feature/your-feature`)
-5. Create a Pull Request
+| Layer | Technology | Version |
+|:---:|:---|:---:|
+| **Frontend** | ![React](https://img.shields.io/badge/React-18.2-61DAFB?logo=react) ![Vite](https://img.shields.io/badge/Vite-5.x-646CFF?logo=vite) ![AntD](https://img.shields.io/badge/Ant_Design-5.x-0170FE?logo=ant-design) |
+| **Backend** | ![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688?logo=fastapi) ![pandas](https://img.shields.io/badge/pandas-2.x-150458?logo=pandas) |
+| **Data** | ![Kaggle](https://img.shields.io/badge/Kaggle-UCI_SECOM-20BEFF?logo=kaggle) |
 
----
-
-## License
-
-This project is licensed under the MIT License. See LICENSE file for details.
+</div>
 
 ---
 
-## Contact
+## 🤝 Contributing
 
-**Illusion-Breakers Team**  
-GitHub: [github.com/Illusion-Breakers](https://github.com/Illusion-Breakers)
+We welcome contributions of all kinds!
 
----
-
-## References
-
-1. Wilamowski, B. M., et al. (2002). "IC Test and Diagnosis Methodology." IEEE Transactions on Industrial Electronics.
-2. Asada, T., et al. (2010). "False Reject Analysis in Wafer Test." IEEE VLSI Test Symposium.
-3. SEMI E10 Standards - Process Test Data Exchange
-4. IPC-9261 - Electronic Test Equipment Wire and Cable Performance
+1. 🍴 Fork the repository
+2. 🌿 Create a feature branch (`git checkout -b feature/AmazingFeature`)
+3. 💾 Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. 🚀 Push to the branch (`git push origin feature/AmazingFeature`)
+5. 📝 Create a Pull Request
 
 ---
 
-**Last Updated:** April 15, 2024  
-**Version:** 1.0-MVP
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+
+## 👥 Team
+
+<div align="center">
+
+**🎨 Illusion-Breakers**
+
+*Illuminating the truth through data*
+
+</div>
+
+---
+
+## 📬 Contact
+
+- 📧 **GitHub**: [Illusion-Breakers/FalsePass-Hunter](https://github.com/Illusion-Breakers/FalsePass-Hunter)
+- 🐛 **Issues**: Submit issues on the Issues page
+- 💬 **Discussions**: Feel free to start discussions
+
+---
+
+<div align="center">
+
+**Made with ❤️ by Illusion-Breakers**
+
+[⬆️ Back to Top](#-falsepass-hunter)
+
+</div>

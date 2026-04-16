@@ -3,27 +3,28 @@ import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, 
 import { FileTextOutlined, DownloadOutlined, PrinterOutlined, ReloadOutlined, CheckCircleOutlined, WarningOutlined } from '@ant-design/icons'
 import { useState } from 'react'
 import html2pdf from 'html2pdf.js'
+import { getRiskReport } from '../data/api'
 
-const riskData = [
+const defaultRiskData = [
   { name: 'Risk', value: 78 },
   { name: 'Safe', value: 22 }
 ]
 
-const breakdownData = [
+const defaultBreakdownData = [
   { name: 'Test Data Anomaly', value: 78 },
   { name: 'Script Version Drift', value: 45 },
   { name: 'Fixture Health', value: 89 },
   { name: 'Historical Rework', value: 67 }
 ]
 
-const topRiskItems = [
+const defaultTopRiskItems = [
   { rank: 1, test: 'VOLT-01', contribution: 32, confidence: 94, action: 'Retest', impact: 'Critical' },
   { rank: 2, test: 'CURR-02', contribution: 25, confidence: 87, action: 'Inspect', impact: 'High' },
   { rank: 3, test: 'TEMP-01', contribution: 18, confidence: 82, action: 'Review', impact: 'Medium' },
   { rank: 4, test: 'CONT-01', contribution: 15, confidence: 76, action: 'Clean', impact: 'Low' },
 ]
 
-const historicalTrend = [
+const defaultHistoricalTrend = [
   { date: '2026-04-11', riskScore: 65, failureRate: 1.2 },
   { date: '2026-04-12', riskScore: 72, failureRate: 2.1 },
   { date: '2026-04-13', riskScore: 75, failureRate: 2.8 },
@@ -36,23 +37,47 @@ function RiskReport() {
   const [reportVisible, setReportVisible] = useState(false)
   const [loading, setLoading] = useState(false)
   const [reportData, setReportData] = useState(null)
+  const [riskScore, setRiskScore] = useState(78)
+  const [breakdownData, setBreakdownData] = useState(defaultBreakdownData)
+  const [topRiskItems, setTopRiskItems] = useState(defaultTopRiskItems)
+  const [historicalTrend, setHistoricalTrend] = useState(defaultHistoricalTrend)
+  const [dataSource, setDataSource] = useState('Kaggle UCI SECOM')
+  const [evidenceSummary, setEvidenceSummary] = useState('')
 
-  const handleGenerateReport = () => {
+  const handleGenerateReport = async () => {
     setLoading(true)
-    setTimeout(() => {
+    try {
+      const resp = await getRiskReport(selectedSN)
+      const r = resp.data
+      setRiskScore(r.riskScore)
+      setBreakdownData(r.breakdownData || defaultBreakdownData)
+      setTopRiskItems(r.topRiskItems || defaultTopRiskItems)
+      setHistoricalTrend(r.historicalTrend || defaultHistoricalTrend)
+      setDataSource(r.dataSource || 'Kaggle UCI SECOM')
+      setEvidenceSummary(
+        `Risk score ${r.riskScore} is driven by ${r.breakdownData?.[0]?.name || 'sensor drift'} and the top-ranked items flagged for retest.`
+      )
       setReportData({
         sampleId: selectedSN,
         timestamp: new Date().toLocaleString(),
-        riskScore: 78,
-        status: 'High Risk',
-        totalTests: 127,
-        failedTests: 5,
-        suspiciousTests: 8,
+        riskScore: r.riskScore,
+        status: r.status,
+        totalTests: r.totalTests,
+        failedTests: r.failedTests,
+        suspiciousTests: r.suspiciousTests,
       })
       setReportVisible(true)
+    } catch (error) {
+      console.error(error)
+    } finally {
       setLoading(false)
-    }, 1200)
+    }
   }
+  const riskData = [
+    { name: 'Risk', value: riskScore },
+    { name: 'Safe', value: Math.max(0, 100 - riskScore) }
+  ]
+
 
   const handleExportPDF = () => {
     const element = document.getElementById('report-content')
@@ -61,15 +86,31 @@ function RiskReport() {
       return
     }
 
+    const tempElement = element.cloneNode(true)
+    tempElement.id = 'report-content-clone'
+    tempElement.style.position = 'fixed'
+    tempElement.style.left = '0'
+    tempElement.style.top = '0'
+    tempElement.style.width = '900px'
+    tempElement.style.maxWidth = '900px'
+    tempElement.style.background = '#ffffff'
+    tempElement.style.padding = '24px'
+    tempElement.style.zIndex = '9999'
+    tempElement.style.pointerEvents = 'none'
+    tempElement.style.boxSizing = 'border-box'
+    document.body.appendChild(tempElement)
+
     const opt = {
       margin: 10,
-      filename: `risk-report-${selectedSN}-${new Date().getTime()}.pdf`,
+      filename: `falsepass-hunter-risk-report-${selectedSN}-${new Date().getTime()}.pdf`,
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2 },
       jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
     }
 
-    html2pdf().set(opt).from(element).save()
+    html2pdf().set(opt).from(tempElement).save().finally(() => {
+      document.body.removeChild(tempElement)
+    })
   }
 
   const topColumns = [
@@ -180,8 +221,34 @@ function RiskReport() {
         </Row>
       </Card>
 
+      <Card title="🧾 Evidence Summary" style={{ marginBottom: 24, borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
+        <Row gutter={[16, 16]}>
+          <Col xs={24} lg={16}>
+            <p style={{ marginTop: 0 }}>{evidenceSummary || 'Generate a report to see the evidence chain.'}</p>
+            <Space wrap>
+              <Tag color="blue">Data Source: {dataSource}</Tag>
+              <Tag color="red">Risk Score: {riskScore}/100</Tag>
+              <Tag color="orange">Top Contributors: {topRiskItems.length}</Tag>
+            </Space>
+          </Col>
+          <Col xs={24} lg={8}>
+            <div style={{ background: '#f8fbff', border: '1px solid #e6f4ff', borderRadius: 8, padding: 16 }}>
+              <div style={{ fontSize: 12, color: '#666', marginBottom: 8 }}>Export-ready narrative</div>
+              <div style={{ fontSize: 13, lineHeight: 1.8 }}>
+                {reportData ? `${reportData.sampleId} is classified as ${reportData.status}. ${reportData.suspiciousTests} suspicious tests were highlighted.` : 'Waiting for report generation.'}
+              </div>
+            </div>
+          </Col>
+        </Row>
+      </Card>
+
       {/* Main Report Content */}
       <div id="report-content">
+        <div style={{ padding: '12px 16px', background: '#f8fbff', border: '1px solid #e6f4ff', borderRadius: 8, marginBottom: 16 }}>
+          <strong>Data Source:</strong> {dataSource}<br />
+          <strong>Data Path:</strong> {reportData?.sampleId ? 'Project-local data/uci-secom.csv' : 'Generate report to inspect data path.'}<br />
+          <strong>Evidence Summary:</strong> {evidenceSummary || 'Generate report to populate evidence summary.'}
+        </div>
         {/* Risk Score Cards */}
         <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
           <Col xs={24} sm={12} lg={6}>
@@ -424,6 +491,8 @@ function RiskReport() {
           <div style={{ padding: '20px 0' }}>
             <p><strong>Sample ID:</strong> {reportData.sampleId}</p>
             <p><strong>Analysis Time:</strong> {reportData.timestamp}</p>
+            <p><strong>Data Source:</strong> {dataSource}</p>
+            <p><strong>Data Path:</strong> {reportData?.sampleId ? 'Project-local data/uci-secom.csv' : 'Generate a report first'}</p>
             <Divider />
             <p><strong>Risk Score:</strong> <span style={{ color: '#ff4d4f', fontSize: 18, fontWeight: 'bold' }}>{reportData.riskScore}/100</span></p>
             <p><strong>Status:</strong> <Tag color="red">{reportData.status}</Tag></p>
