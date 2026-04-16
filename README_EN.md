@@ -20,21 +20,19 @@
 ## 📖 Table of Contents
 
 <details>
-<summary>Click to expand full table of contents</summary>
+<summary>Click to expand</summary>
 
 - [✨ Features](#-features)
-- [🎯 Page Overview](#-page-overview)
+- [🎯 Pages](#-pages)
 - [🏗️ Architecture](#️-architecture)
-- [📂 Project Structure](#-project-structure)
+- [📂 Structure](#-structure)
 - [🚀 Quick Start](#-quick-start)
-- [🔌 API Documentation](#-api-documentation)
-- [📊 Data Information](#-data-information)
-- [🧪 Testing & Validation](#-testing--validation)
+- [🔌 API](#-api)
+- [📊 Data](#-data)
 - [🛠️ Tech Stack](#️-tech-stack)
 - [🤝 Contributing](#-contributing)
 - [📄 License](#-license)
 - [👥 Team](#-team)
-- [📬 Contact](#-contact)
 
 </details>
 
@@ -42,51 +40,71 @@
 
 ## ✨ Features
 
-| 🎯 Real Data Driven | 📈 Visual Analytics | 🔍 Explainability |
-|:---:|:---:|:---:|
-| Built on Kaggle UCI SECOM dataset | Multi-dimensional risk visualization | Evidence Chain tracking |
-
-| 🔔 Real-time Alerts | 📄 Report Export | 🌐 Cross-platform |
-|:---:|:---:|:---:|
-| Drift monitoring & anomaly detection | PDF risk report generation | React + FastAPI full-stack |
+**🎯 Real Data Driven** — Built on Kaggle UCI SECOM dataset  
+**📈 Visual Analytics** — Multi-dimensional risk visualization  
+**🔍 Explainability** — Evidence Chain tracking  
+**🔔 Real-time Alerts** — Drift monitoring & anomaly detection  
+**📄 Report Export** — PDF risk report generation  
+**🌐 Cross-platform** — React + FastAPI full-stack
 
 ---
 
-## 🎯 Page Overview
+## 🎯 Pages
 
-| Page | Purpose | Core API | Output |
-|------|---------|----------|--------|
-| 🏠 **Home** | Entry point & navigation | - | Quick navigation |
-| 📊 **Dashboard** | Main control panel | `/api/dashboard/summary` | Trends, station overview, risk distribution, evidence chain |
-| 📈 **Drift Monitor** | Drift monitoring | `/api/drift/summary` | Time-window drift comparison, anomaly events |
-| 🔀 **Cross Stage** | Cross-process analysis | `/api/cross-stage/summary` | Inter-stage risk comparison, correlation analysis |
-| ⚠️ **Risk Report** | Sample-level report | `/api/risk/report` | Risk score, evidence summary, PDF export |
-| 📝 **Log Analysis** | Log diagnostics | `/api/log/analyze` | Structured log analysis results |
+**🏠 Home** — Entry point & navigation  
+**📊 Dashboard** — Main control panel (`/api/dashboard/summary`)  
+**📈 Drift Monitor** — Drift analysis (`/api/drift/summary`)  
+**🔀 Cross Stage** — Cross-process analysis (`/api/cross-stage/summary`)  
+**⚠️ Risk Report** — Sample-level report (`/api/risk/report`)  
+**📝 Log Analysis** — Log diagnostics (`/api/log/analyze`)
 
 ---
 
 ## 🏗️ Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────┐
-│                        FalsePass Hunter                          │
-├─────────────┬─────────────┬─────────────┬─────────────┬─────────┤
-│  📊 Home    │  📈 Drift   │  🔀 Cross   │  ⚠️ Risk    │  📝 Log │
-│  Dashboard  │  Monitor    │  Stage      │  Report     │  Analysis│
-└─────────────┴─────────────┴─────────────┴─────────────┴─────────┘
-```
-
-### Data Flow
-
-```
-┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│  CSV Source   │ ──> │  FastAPI     │ ──> │  React UI    │
-│ uci-secom.csv│     │   main.py    │     │   Components  │
-└──────────────┘     └──────────────┘     └──────────────┘
-       │                      │                      │
-       ▼                      ▼                      ▼
-  1567 rows × 592 cols    RESTful API           Visualizations
-  Time + Pass/Fail        JSON Response         PDF Export
+                         ╔════════════════════════════════════════╗
+                         ║         FalsePass Hunter               ║
+                         ╚════════════════════════════════════════╝
+                                      │
+                                      │ Data Source
+                                      ▼
+                         ┌────────────────────────┐
+                         │  data/uci-secom.csv    │
+                         │   1567 rows × 592 cols │
+                         │   Time + Pass/Fail     │
+                         └───────────┬────────────┘
+                                     │
+                                     │ FastAPI Processing
+                                     ▼
+                    ┌────────────────────────────────┐
+                    │        backend/main.py         │
+                    │   ┌────────────────────────┐   │
+                    │   │  RESTful API Endpoints │   │
+                    │   │  /api/health           │   │
+                    │   │  /api/dashboard/...    │   │
+                    │   │  /api/drift/...        │   │
+                    │   │  /api/cross-stage/...  │   │
+                    │   │  /api/risk/...         │   │
+                    │   │  /api/log/...          │   │
+                    │   └────────────────────────┘   │
+                    └────────────┬───────────────────┘
+                                 │
+                                 │ JSON Response
+                                 ▼
+                    ┌────────────────────────────────┐
+                    │       React Frontend           │
+                    │  ┌────┬────┬────┬────┬────┐   │
+                    │  │📊  │📈  │🔀  │⚠️  │📝  │   │
+                    │  │Home│Drift│Cross│Risk│Log │   │
+                    │  └────┴────┴────┴────┴────┘   │
+                    └────────────┬───────────────────┘
+                                 │
+                                 │ Output
+                                 ▼
+              ┌──────────────────────────────────────┐
+              │  Visualizations / PDF Export         │
+              └──────────────────────────────────────┘
 ```
 
 ---
@@ -95,25 +113,29 @@
 
 ```
 FalsePass-Hunter/
-├── 📄 README.md                 # Chinese documentation
-├── 📄 README_EN.md              # English documentation
-├── 📄 LICENSE                   # MIT License
+│
+├── 📄 README.md            # Chinese docs
+├── 📄 README_EN.md         # English docs
+├── 📄 LICENSE              # MIT License
+│
 ├── 📦 data/
-│   └── uci-secom.csv            # Kaggle UCI SECOM Dataset (1567×592)
+│   └── uci-secom.csv       # Kaggle UCI SECOM Dataset
+│
 ├── 🔧 backend/
-│   ├── main.py                  # FastAPI main application
-│   └── requirements.txt         # Python dependencies
+│   ├── main.py             # FastAPI app
+│   └── requirements.txt    # Python deps
+│
 └── ⚛️ src/
-    ├── pages/                   # Page components
-    │   ├── Dashboard.jsx        # 📊 Main Dashboard
-    │   ├── DriftMonitor.jsx     # 📈 Drift Monitor
-    │   ├── CrossStage.jsx       # 🔀 Cross Stage Analysis
-    │   ├── RiskReport.jsx       # ⚠️ Risk Report
-    │   └── LogAnalysis.jsx      # 📝 Log Analysis
-    ├── components/              # Reusable components
-    ├── data/                    # Frontend data configuration
-    ├── styles/                  # Style files
-    └── App.jsx                  # Application entry point
+    ├── pages/              # Page components
+    │   ├── Dashboard.jsx
+    │   ├── DriftMonitor.jsx
+    │   ├── CrossStage.jsx
+    │   ├── RiskReport.jsx
+    │   └── LogAnalysis.jsx
+    ├── components/         # Reusable components
+    ├── data/               # Frontend data
+    ├── styles/             # Styles
+    └── App.jsx             # Entry point
 ```
 
 ---
@@ -126,151 +148,72 @@ FalsePass-Hunter/
 - Python >= 3.9
 - npm >= 8.0.0
 
-### 1️⃣ Clone the Repository
+### Install & Run
 
 ```bash
+# Clone
 git clone https://github.com/Illusion-Breakers/FalsePass-Hunter.git
 cd FalsePass-Hunter
-```
 
-### 2️⃣ Install Backend Dependencies
-
-```bash
+# Backend
 cd backend
 pip install -r requirements.txt
-```
-
-### 3️⃣ Start Backend Server
-
-```bash
 uvicorn main:app --reload --port 8000
-```
 
-> ✅ Verify backend at `http://localhost:8000/api/health`
-
-### 4️⃣ Install Frontend Dependencies
-
-```bash
-cd ../src
+# Frontend (new terminal)
+cd src
 npm install
-```
-
-### 5️⃣ Start Frontend Dev Server
-
-```bash
 npm run dev
 ```
 
-> 🎉 Access the application at `http://localhost:3000`
+> 🎉 Open `http://localhost:3000`
 
 ---
 
-## 🔌 API Documentation
+## 🔌 API
 
-### Endpoints Overview
-
-| Method | Endpoint | Description | Parameters |
-|--------|----------|-------------|------------|
-| `GET` | `/api/health` | Health check | - |
-| `GET` | `/api/dashboard/summary` | Dashboard data | `station`, `timeRange` |
-| `GET` | `/api/drift/summary` | Drift analysis | `station`, `timeRange` |
-| `GET` | `/api/cross-stage/summary` | Cross-stage analysis | - |
-| `GET` | `/api/risk/report` | Risk report | `sampleId` |
-| `POST` | `/api/log/analyze` | Log analysis | `{ logText }` |
-
-### Response Example
-
-<details>
-<summary>Dashboard Summary Response Structure</summary>
-
-```json
-{
-  "metrics": {
-    "totalTested": 1567,
-    "falsePass": 42,
-    "riskAlerts": 15,
-    "confidence": 0.94
-  },
-  "trendData": [...],
-  "stations": [...],
-  "riskDistribution": {
-    "low": 850,
-    "medium": 500,
-    "high": 217
-  },
-  "provenance": "data/uci-secom.csv",
-  "evidenceChain": {...}
-}
-```
-
-</details>
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/health` | GET | Health check |
+| `/api/dashboard/summary` | GET | Dashboard data |
+| `/api/drift/summary` | GET | Drift analysis |
+| `/api/cross-stage/summary` | GET | Cross-stage analysis |
+| `/api/risk/report` | GET | Risk report |
+| `/api/log/analyze` | POST | Log analysis |
 
 ---
 
-## 📊 Data Information
+## 📊 Data
 
-### UCI SECOM Dataset
-
-| Attribute | Value |
-|-----------|-------|
-| **Source** | Kaggle - UCI SECOM |
-| **Samples** | 1,567 rows |
-| **Features** | 592 columns |
-| **Key Fields** | `Time`, `Pass/Fail` |
-| **Data Type** | Semiconductor manufacturing sensor data |
-
-### Data Validation
-
-```bash
-# Verify data integrity
-cd backend
-python -c "import pandas as pd; df = pd.read_csv('data/uci-secom.csv'); print(f'Rows: {len(df)}, Cols: {len(df.columns)}')"
-```
-
----
-
-## 🧪 Testing & Validation
-
-### Backend Health Check
-
-```bash
-curl http://localhost:8000/api/health
-```
-
-### Frontend Build Test
-
-```bash
-cd src
-npm run build
-```
+**Source**: Kaggle - UCI SECOM  
+**Samples**: 1,567 rows  
+**Features**: 592 columns  
+**Key Fields**: `Time`, `Pass/Fail`  
+**Type**: Semiconductor manufacturing sensor data
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer | Technologies |
-|-------|--------------|
-| **Frontend** | React 18.2 • Vite 5.x • Ant Design 5.x • Recharts • html2pdf.js |
-| **Backend** | FastAPI 0.100+ • pandas 2.x • numpy • uvicorn |
-| **Data** | Kaggle UCI SECOM |
+**Frontend**: React 18.2 • Vite 5.x • Ant Design 5.x • Recharts  
+**Backend**: FastAPI 0.100+ • pandas 2.x • numpy • uvicorn  
+**Data**: Kaggle UCI SECOM
 
 ---
 
 ## 🤝 Contributing
 
-We welcome contributions of all kinds!
-
-1. 🍴 Fork the repository
-2. 🌿 Create a feature branch `git checkout -b feature/AmazingFeature`
-3. 💾 Commit your changes `git commit -m 'Add some AmazingFeature'`
-4. 🚀 Push to the branch `git push origin feature/AmazingFeature`
-5. 📝 Create a Pull Request
+1. 🍴 Fork the repo
+2. 🌿 Create branch `git checkout -b feature/AmazingFeature`
+3. 💾 Commit `git commit -m 'Add AmazingFeature'`
+4. 🚀 Push `git push origin feature/AmazingFeature`
+5. 📝 Create PR
 
 ---
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+MIT License - see [LICENSE](LICENSE)
 
 ---
 
@@ -288,16 +231,14 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📬 Contact
 
-- 📧 **GitHub**: [Illusion-Breakers/FalsePass-Hunter](https://github.com/Illusion-Breakers/FalsePass-Hunter)
-- 🐛 **Issues**: Submit issues on the Issues page
-- 💬 **Discussions**: Feel free to start discussions
+- GitHub: [Illusion-Breakers/FalsePass-Hunter](https://github.com/Illusion-Breakers/FalsePass-Hunter)
+- Issues: Submit issues
+- Discussions: Start discussions
 
 ---
 
 <div align="center">
 
 **Made with ❤️ by Illusion-Breakers**
-
-[⬆️ Back to Top](#-falsepass-hunter)
 
 </div>
