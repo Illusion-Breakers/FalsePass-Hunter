@@ -1,10 +1,9 @@
 import { Card, Row, Col, Table, Tag, Statistic, Button, Space, Select, Spin, Modal, Alert, Tooltip, message } from 'antd'
-import { TeamOutlined, WarningOutlined, ThunderboltOutlined, CheckCircleOutlined, ReloadOutlined, DownloadOutlined, ArrowUpOutlined, ArrowDownOutlined, FilePdfOutlined, FileExcelOutlined, RobotOutlined } from '@ant-design/icons'
+import { TeamOutlined, WarningOutlined, ThunderboltOutlined, CheckCircleOutlined, ReloadOutlined, DownloadOutlined, ArrowUpOutlined, ArrowDownOutlined, FilePdfOutlined, FileExcelOutlined } from '@ant-design/icons'
 import { useState, useEffect } from 'react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartTooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell, AreaChart, Area } from 'recharts'
 import html2pdf from 'html2pdf.js'
 import { generateDashboardData } from '../data/mockData'
-import AIAssistant from '../components/AIAssistant'
 
 function Dashboard() {
   const [dateRange, setDateRange] = useState('7d')
@@ -13,7 +12,6 @@ function Dashboard() {
   const [trendData, setTrendData] = useState([])
   const [filteredStations, setFilteredStations] = useState([])
   const [dashboardData, setDashboardData] = useState(null)
-  const [aiVisible, setAiVisible] = useState(false)
 
   // 生成动态数据
   const refreshData = () => {
@@ -192,17 +190,6 @@ function Dashboard() {
                   style={{ borderRadius: 8, fontWeight: 600 }}
                 >
                   Export
-                </Button>
-              </Tooltip>
-              <Tooltip title="AI Assistant">
-                <Button
-                  icon={<RobotOutlined />}
-                  onClick={() => setAiVisible(true)}
-                  size="large"
-                  type="primary"
-                  style={{ borderRadius: 8, fontWeight: 600, background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' }}
-                >
-                  AI
                 </Button>
               </Tooltip>
             </Space>
@@ -435,9 +422,6 @@ function Dashboard() {
           </table>
         </div>
       </div>
-
-      {/* AI Assistant Drawer */}
-      <AIAssistant visible={aiVisible} onClose={() => setAiVisible(false)} context={dashboardData} />
     </Spin>
   )
 }

@@ -85,9 +85,7 @@ body,
 
 body {
   font-family: var(--font-family);
-  background: linear-gradient(135deg, #f0f2f5 0%, #e8f4f8 50%, #f0f2f5 100%);
-  background-size: 200% 200%;
-  animation: gradientShift 15s ease infinite;
+  background: #f0f2f5;
   color: var(--color-text);
   overflow-x: hidden;
 }
