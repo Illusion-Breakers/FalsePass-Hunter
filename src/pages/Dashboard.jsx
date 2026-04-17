@@ -3,6 +3,7 @@ import { TeamOutlined, WarningOutlined, ThunderboltOutlined, CheckCircleOutlined
 import { useState, useEffect } from 'react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartTooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts'
 import html2pdf from 'html2pdf.js'
+import { generateDashboardData } from '../data/mockData'
 
 function Dashboard() {
   const [dateRange, setDateRange] = useState('7d')
@@ -10,80 +11,41 @@ function Dashboard() {
   const [loading, setLoading] = useState(false)
   const [trendData, setTrendData] = useState([])
   const [filteredStations, setFilteredStations] = useState([])
-  const [exportFormat, setExportFormat] = useState(null)
+  const [dashboardData, setDashboardData] = useState(null)
 
-  // All station data
-  const allStationsData = [
-    { id: '1', station: 'ICT-01', status: 'Running', output: 1248, risks: 3, yield: 99.8 },
-    { id: '2', station: 'FCT-02', status: 'Running', output: 986, risks: 1, yield: 99.9 },
-    { id: '3', station: 'ICT-03', status: 'Warning', output: 756, risks: 5, yield: 98.9 },
-  ]
-
-  // Data for different time ranges
-  const dataByTimeRange = {
-    '24h': [
-      { date: '00:00', tests: 42, falsePass: 0, risks: 0 },
-      { date: '04:00', tests: 38, falsePass: 1, risks: 0 },
-      { date: '08:00', tests: 51, falsePass: 1, risks: 1 },
-      { date: '12:00', tests: 67, falsePass: 2, risks: 1 },
-      { date: '16:00', tests: 59, falsePass: 1, risks: 0 },
-      { date: '20:00', tests: 62, falsePass: 2, risks: 1 },
-      { date: '23:59', tests: 24, falsePass: 0, risks: 0 },
-    ],
-    '7d': [
-      { date: 'Apr 09', tests: 178, falsePass: 2, risks: 1 },
-      { date: 'Apr 10', tests: 185, falsePass: 3, risks: 2 },
-      { date: 'Apr 11', tests: 142, falsePass: 1, risks: 0 },
-      { date: 'Apr 12', tests: 215, falsePass: 4, risks: 2 },
-      { date: 'Apr 13', tests: 198, falsePass: 3, risks: 1 },
-      { date: 'Apr 14', tests: 189, falsePass: 2, risks: 1 },
-      { date: 'Apr 15', tests: 141, falsePass: 2, risks: 1 },
-    ],
-    '30d': [
-      { date: 'Mar 16', tests: 1200, falsePass: 18, risks: 5 },
-      { date: 'Mar 23', tests: 1380, falsePass: 22, risks: 8 },
-      { date: 'Mar 30', tests: 1290, falsePass: 19, risks: 6 },
-      { date: 'Apr 06', tests: 1450, falsePass: 25, risks: 7 },
-      { date: 'Apr 13', tests: 1298, falsePass: 20, risks: 6 },
-      { date: 'Apr 15', tests: 343, falsePass: 5, risks: 1 },
-    ]
+  // 生成动态数据
+  const refreshData = () => {
+    const data = generateDashboardData()
+    setDashboardData(data)
   }
 
-  // Initialize data
+  // Update trend data when dateRange changes
   useEffect(() => {
-    setTrendData(dataByTimeRange[dateRange])
-    setFilteredStations(allStationsData)
+    if (dashboardData) {
+      setTrendData(dashboardData.trendData[dateRange])
+      setFilteredStations(dashboardData.stations)
+    }
+  }, [dateRange, dashboardData])
+
+  // Initialize data on mount
+  useEffect(() => {
+    refreshData()
   }, [])
 
-  // Update trend data when date range changes
-  useEffect(() => {
-    setTrendData(dataByTimeRange[dateRange])
-  }, [dateRange])
-
-  // Update filtered stations when station selection changes
-  useEffect(() => {
-    if (station === 'all') {
-      setFilteredStations(allStationsData)
-    } else if (station === 'ict01') {
-      setFilteredStations(allStationsData.filter(s => s.station === 'ICT-01'))
-    } else if (station === 'fct02') {
-      setFilteredStations(allStationsData.filter(s => s.station === 'FCT-02'))
-    }
-  }, [station])
+  if (!dashboardData) return <Spin size="large" />
 
   const metrics = [
-    { title: 'Total Tests', value: 1248, icon: TeamOutlined, color: '#1890ff', trend: 12, up: true },
-    { title: 'False Pass Rate', value: 17, icon: WarningOutlined, color: '#ff7a45', trend: 5, up: false },
-    { title: 'High Risk Items', value: 5, icon: ThunderboltOutlined, color: '#faad14', trend: 2, up: false },
-    { title: 'System Accuracy', value: '94.2%', icon: CheckCircleOutlined, color: '#52c41a', trend: 3, up: true },
+    { title: 'Total Tests', value: dashboardData.metrics.totalTests, icon: TeamOutlined, color: '#1890ff', trend: 12, up: true },
+    { title: 'False Pass Detected', value: dashboardData.metrics.falsePassDetected, icon: WarningOutlined, color: '#ff7a45', trend: 5, up: false },
+    { title: 'High Risk Alerts', value: dashboardData.metrics.highRiskAlerts, icon: ThunderboltOutlined, color: '#faad14', trend: 2, up: false },
+    { title: 'System Confidence', value: dashboardData.metrics.systemConfidence + '%', icon: CheckCircleOutlined, color: '#52c41a', trend: 3, up: true },
   ]
 
   const columns = [
     { title: 'Station', dataIndex: 'station', key: 'station', width: 120, render: (text) => <span style={{ fontWeight: 600 }}>{text}</span> },
-    { title: 'Status', dataIndex: 'status', render: (s) => <Tag color={s === 'Running' ? '#52c41a' : '#faad14'}>{s}</Tag>, width: 100 },
+    { title: 'Status', dataIndex: 'status', render: (s) => <Tag color={s === 'running' ? '#52c41a' : '#faad14'}>{s.toUpperCase()}</Tag>, width: 100 },
     { title: 'Output', dataIndex: 'output', key: 'output', width: 100, align: 'right' },
     { title: 'Risks', dataIndex: 'risks', width: 70, align: 'center', render: (r) => <Tag color={r > 3 ? '#ff4d4f' : '#faad14'}>{r}</Tag> },
-    { title: 'Yield Rate', dataIndex: 'yield', render: (v) => <span style={{ color: '#52c41a', fontWeight: 600 }}>{v}%</span>, width: 100, align: 'right' },
   ]
 
   const riskPie = [{ name: 'Low Risk', value: 65 }, { name: 'Medium Risk', value: 25 }, { name: 'High Risk', value: 10 }]
@@ -93,16 +55,17 @@ function Dashboard() {
   const handleRefresh = () => {
     setLoading(true)
     setTimeout(() => {
+      refreshData()
       message.success('Data refreshed successfully!')
       setLoading(false)
-    }, 1200)
+    }, 800)
   }
 
   // Export to CSV
   const handleExportCSV = () => {
-    const headers = ['Station', 'Status', 'Output', 'Risks', 'Yield Rate']
-    const rows = filteredStations.map(s => [s.station, s.status, s.output, s.risks, `${s.yield}%`])
-    
+    const headers = ['Station', 'Status', 'Output', 'Risks']
+    const rows = filteredStations.map(s => [s.station, s.status, s.output, s.risks])
+
     let csv = headers.join(',') + '\n'
     rows.forEach(row => {
       csv += row.join(',') + '\n'
@@ -286,11 +249,11 @@ function Dashboard() {
         </Row>
 
         {/* Station Status Table */}
-        <Card 
-          title="🏭 Test Station Status" 
+        <Card
+          title="🏭 Test Station Status"
           style={{ borderRadius: 8, boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}
           extra={
-            <Tooltip title={`Showing ${filteredStations.length} of ${allStationsData.length} stations`}>
+            <Tooltip title={`Showing ${filteredStations.length} stations`}>
               <span style={{ fontSize: 12, color: '#999' }}>{filteredStations.length} stations</span>
             </Tooltip>
           }

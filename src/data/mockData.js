@@ -3,38 +3,82 @@
  * 包含所有页面所需的数据结构
  */
 
-// ============ Dashboard 数据 ============
-export const dashboardData = {
-  metrics: {
-    totalTests: 1248,
-    falsePassDetected: 17,
-    highRiskAlerts: 5,
-    systemConfidence: 94.2,
-  },
-  trendData: [
-    { date: '4/9', count: 12 },
-    { date: '4/10', count: 15 },
-    { date: '4/11', count: 8 },
-    { date: '4/12', count: 22 },
-    { date: '4/13', count: 17 },
-    { date: '4/14', count: 19 },
-    { date: '4/15', count: 14 },
-  ],
-  stations: [
-    { id: '1', line: 'A', station: 'ICT-01', status: 'running', output: 1248, risks: 3 },
-    { id: '2', line: 'A', station: 'FCT-02', status: 'running', output: 986, risks: 1 },
-    { id: '3', line: 'B', station: 'ICT-03', status: 'warning', output: 756, risks: 5 },
-  ],
-  fixtures: [
-    { id: 'A01', station: 'ICT-01', health: 85, status: 'good', usageCount: 3245 },
-    { id: 'B02', station: 'ICT-03', health: 58, status: 'warning', usageCount: 4521 },
-    { id: 'C03', station: 'FCT-02', health: 72, status: 'good', usageCount: 2156 },
-  ],
-  alerts: [
-    { id: '1', level: 'high', message: 'ICT-01 detected 3 high-risk false pass samples', station: 'ICT-01', timestamp: '10:23' },
-    { id: '2', level: 'medium', message: 'Fixture #B02 requires inspection', station: 'ICT-03', timestamp: '09:45' },
-  ],
+// ============ 工具函数：生成随机数 ============
+const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min
+const randomFloat = (min, max, decimals = 1) => parseFloat((Math.random() * (max - min) + min).toFixed(decimals))
+
+// ============ 生成趋势数据 ============
+const generateTrendData = (range) => {
+  if (range === '24h') {
+    return [
+      { date: '00:00', tests: randomInt(35, 50), falsePass: randomInt(0, 2), risks: randomInt(0, 1) },
+      { date: '04:00', tests: randomInt(30, 45), falsePass: randomInt(0, 2), risks: randomInt(0, 1) },
+      { date: '08:00', tests: randomInt(45, 60), falsePass: randomInt(0, 3), risks: randomInt(0, 2) },
+      { date: '12:00', tests: randomInt(55, 75), falsePass: randomInt(1, 4), risks: randomInt(0, 2) },
+      { date: '16:00', tests: randomInt(50, 70), falsePass: randomInt(0, 3), risks: randomInt(0, 1) },
+      { date: '20:00', tests: randomInt(55, 75), falsePass: randomInt(1, 4), risks: randomInt(0, 2) },
+      { date: '23:59', tests: randomInt(20, 35), falsePass: randomInt(0, 2), risks: randomInt(0, 1) },
+    ]
+  }
+  if (range === '30d') {
+    return [
+      { date: 'Mar 16', tests: randomInt(1100, 1300), falsePass: randomInt(15, 25), risks: randomInt(4, 8) },
+      { date: 'Mar 23', tests: randomInt(1200, 1500), falsePass: randomInt(18, 28), risks: randomInt(6, 10) },
+      { date: 'Mar 30', tests: randomInt(1100, 1400), falsePass: randomInt(15, 25), risks: randomInt(5, 8) },
+      { date: 'Apr 06', tests: randomInt(1300, 1600), falsePass: randomInt(20, 30), risks: randomInt(6, 10) },
+      { date: 'Apr 13', tests: randomInt(1100, 1400), falsePass: randomInt(15, 25), risks: randomInt(5, 8) },
+      { date: 'Apr 15', tests: randomInt(300, 400), falsePass: randomInt(3, 8), risks: randomInt(1, 3) },
+    ]
+  }
+  // 7d (default)
+  return [
+    { date: 'Apr 09', tests: randomInt(150, 200), falsePass: randomInt(2, 5), risks: randomInt(1, 3) },
+    { date: 'Apr 10', tests: randomInt(160, 210), falsePass: randomInt(2, 6), risks: randomInt(1, 4) },
+    { date: 'Apr 11', tests: randomInt(120, 170), falsePass: randomInt(1, 4), risks: randomInt(0, 2) },
+    { date: 'Apr 12', tests: randomInt(180, 240), falsePass: randomInt(3, 7), risks: randomInt(2, 4) },
+    { date: 'Apr 13', tests: randomInt(170, 220), falsePass: randomInt(2, 6), risks: randomInt(1, 3) },
+    { date: 'Apr 14', tests: randomInt(160, 210), falsePass: randomInt(2, 5), risks: randomInt(1, 3) },
+    { date: 'Apr 15', tests: randomInt(120, 170), falsePass: randomInt(1, 4), risks: randomInt(1, 2) },
+  ]
 }
+
+// ============ 生成动态 Dashboard 数据 ============
+export const generateDashboardData = () => {
+  const totalTests = randomInt(1100, 1400)
+  const falsePassDetected = randomInt(10, 25)
+  const highRiskAlerts = randomInt(2, 8)
+
+  return {
+    metrics: {
+      totalTests,
+      falsePassDetected,
+      highRiskAlerts,
+      systemConfidence: randomFloat(92, 97, 1),
+    },
+    trendData: {
+      '24h': generateTrendData('24h'),
+      '7d': generateTrendData('7d'),
+      '30d': generateTrendData('30d'),
+    },
+    stations: [
+      { id: '1', line: 'A', station: 'ICT-01', status: 'running', output: randomInt(1100, 1300), risks: randomInt(1, 5) },
+      { id: '2', line: 'A', station: 'FCT-02', status: 'running', output: randomInt(800, 1100), risks: randomInt(0, 3) },
+      { id: '3', line: 'B', station: 'ICT-03', status: randomInt(1, 10) > 7 ? 'warning' : 'running', output: randomInt(600, 900), risks: randomInt(3, 8) },
+    ],
+    fixtures: [
+      { id: 'A01', station: 'ICT-01', health: randomInt(75, 98), status: 'good', usageCount: randomInt(2000, 4000) },
+      { id: 'B02', station: 'ICT-03', health: randomInt(45, 70), status: 'warning', usageCount: randomInt(4000, 5500) },
+      { id: 'C03', station: 'FCT-02', health: randomInt(65, 90), status: 'good', usageCount: randomInt(1500, 3000) },
+    ],
+    alerts: [
+      { id: '1', level: 'high', message: `ICT-01 detected ${randomInt(2, 5)} high-risk false pass samples`, station: 'ICT-01', timestamp: `${randomInt(8, 11)}:${String(randomInt(10, 59)).padStart(2, '0')}` },
+      { id: '2', level: 'medium', message: 'Fixture #B02 requires inspection', station: 'ICT-03', timestamp: `${randomInt(7, 10)}:${String(randomInt(10, 59)).padStart(2, '0')}` },
+    ],
+  }
+}
+
+// 向后兼容，导出静态数据
+export const dashboardData = generateDashboardData()
 
 // ============ DriftMonitor 数据 ============
 export const driftData = {
