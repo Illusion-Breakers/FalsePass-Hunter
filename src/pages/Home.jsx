@@ -1,486 +1,387 @@
-import { Link } from 'react-router-dom'
-import { Button, Row, Col, Card, Statistic, Space, Alert, Table, Progress } from 'antd'
-import { ArrowRightOutlined, FastForwardOutlined, AlertOutlined } from '@ant-design/icons'
-import { useState, useEffect } from 'react'
-import '../styles/home.css'
+import { Link, useNavigate } from 'react-router-dom'
+import { Button, Row, Col, Card, Statistic, Space, Alert, Table, Progress, Typography, Divider } from 'antd'
+import { ArrowRightOutlined, FastForwardOutlined, AlertOutlined, RocketOutlined, SafetyOutlined, ThunderboltOutlined, CloudSynchronizationOutlined } from '@ant-design/icons'
+import { useState, useEffect, useRef } from 'react'
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
+import './home.css'
 
-function Home() {
-  const [scrollY, setScrollY] = useState(0)
+const { Title, Paragraph } = Typography
+
+// 浮动粒子背景组件
+function ParticleBackground() {
+  const [particles, setParticles] = useState([])
 
   useEffect(() => {
-    const handleScroll = () => setScrollY(window.scrollY)
-    window.addEventListener('scroll', handleScroll)
-    return () => window.removeEventListener('scroll', handleScroll)
+    const newParticles = Array.from({ length: 50 }, (_, i) => ({
+      id: i,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      size: Math.random() * 4 + 1,
+      duration: Math.random() * 20 + 10,
+      delay: Math.random() * 5,
+    }))
+    setParticles(newParticles)
   }, [])
 
-  // Problem data
+  return (
+    <div className="particle-container">
+      {particles.map((p) => (
+        <div
+          key={p.id}
+          className="particle"
+          style={{
+            left: `${p.x}%`,
+            top: `${p.y}%`,
+            width: `${p.size}px`,
+            height: `${p.size}px`,
+            animationDuration: `${p.duration}s`,
+            animationDelay: `${p.delay}s`,
+          }}
+        />
+      ))}
+    </div>
+  )
+}
+
+// 渐变网格背景
+function GradientGrid() {
+  return (
+    <div className="gradient-grid">
+      <div className="gradient-cell" style={{ '--x': 0, '--y': 0 }} />
+      <div className="gradient-cell" style={{ '--x': 1, '--y': 0 }} />
+      <div className="gradient-cell" style={{ '--x': 2, '--y': 0 }} />
+      <div className="gradient-cell" style={{ '--x': 3, '--y': 0 }} />
+      <div className="gradient-cell" style={{ '--x': 0, '--y': 1 }} />
+      <div className="gradient-cell" style={{ '--x': 1, '--y': 1 }} />
+      <div className="gradient-cell" style={{ '--x': 2, '--y': 1 }} />
+      <div className="gradient-cell" style={{ '--x': 3, '--y': 1 }} />
+      <div className="gradient-cell" style={{ '--x': 0, '--y': 2 }} />
+      <div className="gradient-cell" style={{ '--x': 1, '--y': 2 }} />
+      <div className="gradient-cell" style={{ '--x': 2, '--y': 2 }} />
+      <div className="gradient-cell" style={{ '--x': 3, '--y': 2 }} />
+    </div>
+  )
+}
+
+// 数据卡片组件
+function StatCard({ icon, value, label, color, delay }) {
+  return (
+    <motion.div
+      className="stat-card-wrapper"
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay }}
+      whileHover={{ scale: 1.05, y: -10 }}
+    >
+      <div className="stat-card-inner" style={{ '--primary-color': color }}>
+        <div className="stat-icon">{icon}</div>
+        <div className="stat-value">{value}</div>
+        <div className="stat-label">{label}</div>
+      </div>
+    </motion.div>
+  )
+}
+
+// 特性卡片组件
+function FeatureCard({ emoji, title, desc, color, index }) {
+  return (
+    <motion.div
+      className="feature-card-wrapper"
+      initial={{ opacity: 0, y: 60 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.7, delay: index * 0.15 }}
+      whileHover={{ scale: 1.03, rotateY: 5 }}
+    >
+      <div className="feature-card" style={{ '--accent-color': color }}>
+        <div className="feature-glow" />
+        <div className="feature-content">
+          <motion.span
+            className="feature-emoji"
+            animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
+            transition={{ duration: 3, repeat: Infinity }}
+          >
+            {emoji}
+          </motion.span>
+          <h3 className="feature-title">{title}</h3>
+          <p className="feature-desc">{desc}</p>
+          <div className="feature-line" />
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+// 模块卡片组件
+function ModuleCard({ emoji, title, desc, index }) {
+  return (
+    <motion.div
+      className="module-card-wrapper"
+      initial={{ opacity: 0, scale: 0.8 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6, delay: index * 0.1 }}
+      whileHover={{ y: -15, boxShadow: '0 25px 50px rgba(24, 144, 255, 0.3)' }}
+    >
+      <div className="module-card">
+        <div className="module-emoji">{emoji}</div>
+        <h3 className="module-title">{title}</h3>
+        <p className="module-desc">{desc}</p>
+        <div className="module-arrow">
+          <ArrowRightOutlined />
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+function Home() {
+  const navigate = useNavigate()
+  const containerRef = useRef(null)
+  const { scrollYProgress } = useScroll({ target: containerRef })
+
+  const heroY = useTransform(scrollYProgress, [0, 0.2], [0, -100])
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0])
+  const scaleProgress = useTransform(scrollYProgress, [0, 0.3], [1, 1.1])
+
   const problems = [
-    {
-      emoji: '📉',
-      title: 'Incomplete Coverage',
-      desc: 'Test scripts may have gaps where boundary conditions are never truly validated, allowing defective products to pass unnoticed.',
-      color: '#ff4d4f'
-    },
-    {
-      emoji: '⚙️',
-      title: 'Threshold Drift',
-      desc: 'Threshold settings that are too wide allow anomalies to pass. Small drifts accumulate into significant quality issues.',
-      color: '#ff7a45'
-    },
-    {
-      emoji: '🔧',
-      title: 'Fixture Degradation',
-      desc: 'Aging fixtures and worn probes cause contact instability, leading to readings that appear normal but mask underlying defects.',
-      color: '#faad14'
-    },
-    {
-      emoji: '🔄',
-      title: 'Missing Feedback Loop',
-      desc: 'Issues recurring at rework stations don\'t feed back into the testing side, so the same false passes continue to slip through.',
-      color: '#722ed1'
-    }
+    { emoji: '📉', title: 'Incomplete Coverage', desc: 'Test scripts may have gaps where boundary conditions are never truly validated.', color: '#ff4d4f' },
+    { emoji: '⚙️', title: 'Threshold Drift', desc: 'Threshold settings that are too wide allow anomalies to pass through.', color: '#ff7a45' },
+    { emoji: '🔧', title: 'Fixture Degradation', desc: 'Aging fixtures and worn probes cause contact instability.', color: '#faad14' },
+    { emoji: '🔄', title: 'Missing Feedback Loop', desc: 'Issues recurring at rework stations do not feed back into testing.', color: '#722ed1' },
   ]
 
-  // Solution modules
   const modules = [
-    {
-      emoji: '📐',
-      title: 'Drift Monitor',
-      desc: 'Monitors deviations in test scripts, thresholds, and waveform statistics compared to historical golden baselines.'
-    },
-    {
-      emoji: '🔗',
-      title: 'Cross-Stage Validator',
-      desc: 'Correlates test-passed samples with subsequent rework and downstream anomalies. Identifies patterns of false passes.'
-    },
-    {
-      emoji: '📝',
-      title: 'Log Reasoning Agent',
-      desc: 'LLM-powered analysis of error logs, engineering notes, and version descriptions for intelligent insights.'
-    },
-    {
-      emoji: '📊',
-      title: 'Risk Scorer',
-      desc: 'Synthesizes numerical anomalies, version changes, and historical rework information into comprehensive risk scores.'
-    }
+    { emoji: '📐', title: 'Drift Monitor', desc: 'Monitor test script deviations and threshold changes' },
+    { emoji: '🔗', title: 'Cross-Stage', desc: 'Correlate defects between production stages' },
+    { emoji: '📝', title: 'Log Analysis', desc: 'AI-powered intelligent log analysis' },
+    { emoji: '📊', title: 'Risk Report', desc: 'Comprehensive risk assessment reports' },
   ]
 
-  // Innovations
-  const innovations = [
-    {
-      num: 1,
-      title: 'Focus on False Pass',
-      desc: 'We target "passed but untrustworthy" - a sharper, more focused approach than traditional anomaly detection.'
-    },
-    {
-      num: 2,
-      title: 'Credibility Over Result',
-      desc: 'Upgrading from "pass/fail classification" to "pass result credibility assessment" for quality assurance.'
-    },
-    {
-      num: 3,
-      title: 'Rework Knowledge Feedback',
-      desc: 'Rework and downstream results feed back to train the testing side\'s risk perception continuously.'
-    },
-    {
-      num: 4,
-      title: 'Numerical + Text Reasoning',
-      desc: 'Both waveform/threshold drift analysis AND engineering notes and version descriptions combined.'
-    },
-    {
-      num: 5,
-      title: 'Fixture Health Prediction',
-      desc: 'Predictive maintenance based on probe usage count, contact resistance trends, and historical patterns.'
-    },
-    {
-      num: 6,
-      title: 'Threshold Optimization',
-      desc: 'Data-driven threshold recommendations balancing false positive and false negative costs effectively.'
-    }
-  ]
-
-  // Dashboard stats
   const stats = [
-    { label: "Today's Tests", value: '1,248', color: '#1890ff' },
-    { label: 'False Pass Detected', value: '17', color: '#faad14' },
-    { label: 'High Risk Alerts', value: '5', color: '#ff4d4f' },
-    { label: 'System Confidence', value: '94.2%', color: '#52c41a' }
-  ]
-
-  // Production line data
-  const lineData = [
-    { station: 'ICT-01', status: '🟢 Running', output: 1248, risk: 3, statusColor: '#52c41a' },
-    { station: 'FCT-02', status: '🟢 Running', output: 986, risk: 1, statusColor: '#52c41a' },
-    { station: 'ICT-03', status: '🟡 Warning', output: 756, risk: 5, statusColor: '#faad14' }
-  ]
-
-  // Fixture health
-  const fixtures = [
-    { name: 'ICT-01 Fixture #A01', health: 85, status: 'Good', color: '#52c41a' },
-    { name: 'ICT-03 Fixture #B02', health: 58, status: 'Needs Inspection', color: '#faad14' },
-    { name: 'FCT-02 Fixture #C03', health: 72, status: 'Good', color: '#52c41a' }
-  ]
-
-  const tableColumns = [
-    {
-      title: 'Station',
-      dataIndex: 'station',
-      key: 'station',
-      render: (text) => <span style={{ fontFamily: 'monospace', fontWeight: 600 }}>{text}</span>
-    },
-    {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
-      render: (text, record) => <span style={{ color: record.statusColor }}>{text}</span>
-    },
-    {
-      title: 'Output',
-      dataIndex: 'output',
-      key: 'output'
-    },
-    {
-      title: 'Risk Count',
-      dataIndex: 'risk',
-      key: 'risk'
-    }
+    { value: '1,567', label: 'Samples Analyzed', color: '#1890ff' },
+    { value: '592', label: 'Parameters Tracked', color: '#722ed1' },
+    { value: '94%', label: 'Detection Rate', color: '#52c41a' },
+    { value: '<1s', label: 'Response Time', color: '#faad14' },
   ]
 
   return (
-    <div className="home-container" style={{ background: '#ffffff', width: '100%', pointerEvents: 'auto' }}>
+    <div className="home-page" ref={containerRef}>
       {/* Hero Section */}
-      <section 
-        className="hero-section" 
-        style={{ 
-          background: 'linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%)',
-          padding: '4rem 2rem',
-          textAlign: 'center',
-          minHeight: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          color: 'white',
-          position: 'relative',
-          zIndex: 1
-        }}
-      >
-        <h1 style={{ fontSize: '3.5rem', marginBottom: '1rem', color: 'white', position: 'relative', zIndex: 10 }}>
-          🔍 FalsePass Hunter AI
-        </h1>
-        <p style={{ fontSize: '1.5rem', opacity: 0.95, marginBottom: '2rem', maxWidth: 800, color: 'white', position: 'relative', zIndex: 10 }}>
-          Hidden False Pass Detection System for Test Engineering
-        </p>
-        <div style={{
-          background: 'rgba(255, 255, 255, 0.15)',
-          padding: '1.5rem 2rem',
-          borderRadius: 8,
-          marginTop: '2rem',
-          fontStyle: 'italic',
-          borderLeft: '4px solid #fbbf24',
-          maxWidth: 700,
-          color: 'white',
-          position: 'relative',
-          zIndex: 10
-        }}>
-          "The most dangerous product in a factory is not the one that fails testing.<br/>
-          It's the one that has problems but 'passed testing' anyway."
+      <section className="hero-section-fancy">
+        <ParticleBackground />
+        <GradientGrid />
+
+        <motion.div
+          className="hero-content"
+          style={{ y: heroY, opacity: heroOpacity, scale: scaleProgress }}
+        >
+          <motion.div
+            className="hero-badge"
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.2, type: 'spring' }}
+          >
+            <RocketOutlined /> AI-Powered Quality Testing
+          </motion.div>
+
+          <motion.h1
+            className="hero-title"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.4, duration: 0.8 }}
+          >
+            <span className="title-gradient">FalsePass</span>
+            <br />
+            <span className="title-secondary">Hunter AI</span>
+          </motion.h1>
+
+          <motion.p
+            className="hero-subtitle"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.8 }}
+          >
+            Detecting the undetectable — Finding false passes before they escape
+          </motion.p>
+
+          <motion.div
+            className="hero-quote"
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.8, duration: 0.8 }}
+          >
+            <span className="quote-icon">"</span>
+            The most dangerous product is not the one that fails testing.
+            <br />
+            It is the one that has problems but passed testing anyway.
+          </motion.div>
+
+          <motion.div
+            className="hero-buttons"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1, duration: 0.8 }}
+          >
+            <Button
+              type="primary"
+              size="large"
+              className="hero-btn-fancy"
+              icon={<FastForwardOutlined />}
+              onClick={() => navigate('/dashboard')}
+            >
+              Explore Dashboard
+            </Button>
+            <Button
+              size="large"
+              className="hero-btn-outline"
+              icon={<ArrowRightOutlined />}
+              onClick={() => {
+                document.getElementById('problems-section').scrollIntoView({ behavior: 'smooth' })
+              }}
+            >
+              Learn More
+            </Button>
+          </motion.div>
+
+          <motion.div
+            className="scroll-indicator"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1.5, duration: 1 }}
+          >
+            <div className="mouse" />
+            <span>Scroll to explore</span>
+          </motion.div>
+        </motion.div>
+
+        <div className="hero-wave">
+          <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
+            <path d="M0,64 C288,120 576,0 864,64 C1152,128 1440,32 1440,32 L1440,120 L0,120 Z" fill="#ffffff" />
+          </svg>
         </div>
-        <Space size="large" style={{ marginTop: '2rem', pointerEvents: 'auto', position: 'relative', zIndex: 10 }}>
-          <Button 
-            type="primary" 
-            size="large"
-            icon={<FastForwardOutlined />}
-            onClick={() => { window.location.href = '/dashboard' }}
-            style={{ 
-              borderRadius: 4, 
-              height: 48, 
-              fontSize: 16, 
-              fontWeight: 600,
-              background: '#ffd700',
-              border: 'none',
-              color: '#001529',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              pointerEvents: 'auto'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#ffed4e'
-              e.currentTarget.style.transform = 'translateY(-2px)'
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(255, 215, 0, 0.4)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = '#ffd700'
-              e.currentTarget.style.transform = 'translateY(0)'
-              e.currentTarget.style.boxShadow = 'none'
-            }}
-          >
-            View Dashboard
-          </Button>
-          <Button 
-            size="large"
-            icon={<ArrowRightOutlined />}
-            onClick={() => document.getElementById('problem-section').scrollIntoView({ behavior: 'smooth' })}
-            style={{ 
-              borderRadius: 4, 
-              height: 48, 
-              fontSize: 16,
-              background: 'rgba(255, 255, 255, 0.2)',
-              border: '1px solid white',
-              color: 'white',
-              cursor: 'pointer',
-              transition: 'all 0.3s ease',
-              pointerEvents: 'auto'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)'
-              e.currentTarget.style.transform = 'translateY(-2px)'
-              e.currentTarget.style.boxShadow = '0 4px 12px rgba(255, 255, 255, 0.2)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)'
-              e.currentTarget.style.transform = 'translateY(0)'
-              e.currentTarget.style.boxShadow = 'none'
-            }}
-          >
-            Learn More
-          </Button>
-        </Space>
       </section>
 
-      {/* Alert Banner */}
-      <Alert
-        message="Current Risk Alert"
-        description="3 high-risk false pass samples detected on Production Line A - ICT-01 station requires immediate inspection"
-        type="warning"
-        icon={<AlertOutlined />}
-        style={{ margin: '2rem auto', maxWidth: 1400, background: 'linear-gradient(135deg, #fff7e6 0%, #fffbe6 100%)', border: '1px solid #ffd666' }}
-        closable
-      />
-
-      {/* Problem Section */}
-      <section 
-        id="problem-section"
-        style={{ 
-          padding: '5rem 2rem', 
-          maxWidth: 1400, 
-          margin: '0 auto',
-          background: 'linear-gradient(135deg, #fff5f7 0%, #f5f8ff 100%)'
-        }}
-      >
-        <h2 style={{ textAlign: 'center', fontSize: '2.5rem', marginBottom: '1rem', color: '#001529' }}>
-          Why False Pass Detection Matters
-        </h2>
-        <p style={{ textAlign: 'center', color: '#666', fontSize: '1.2rem', marginBottom: '3rem' }}>
-          Traditional testing catches failures. We catch what slips through.
-        </p>
-        <Row gutter={[24, 24]}>
-          {problems.map((problem, idx) => (
-            <Col xs={24} sm={12} lg={6} key={idx}>
-              <Card
-                hoverable
-                style={{
-                  borderLeft: `4px solid ${problem.color}`,
-                  background: 'white',
-                  height: '100%',
-                  transition: 'all 0.3s',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
-                }}
-              >
-                <h3 style={{ marginBottom: '1rem', fontSize: '1.2rem', color: '#001529' }}>
-                  {problem.emoji} {problem.title}
-                </h3>
-                <p style={{ color: '#666', lineHeight: 1.8, margin: 0 }}>
-                  {problem.desc}
-                </p>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      </section>
-
-      {/* Modules Section */}
-      <section 
-        style={{ 
-          padding: '5rem 2rem', 
-          maxWidth: 1400, 
-          margin: '0 auto',
-          background: 'linear-gradient(135deg, #f8f9ff 0%, #e8f4ff 100%)'
-        }}
-      >
-        <h2 style={{ textAlign: 'center', fontSize: '2.5rem', marginBottom: '1rem', color: '#001529' }}>
-          Our Solution Architecture
-        </h2>
-        <p style={{ textAlign: 'center', color: '#666', fontSize: '1.2rem', marginBottom: '3rem' }}>
-          Integrated modules working together to assess test credibility
-        </p>
-        <Row gutter={[24, 24]}>
-          {modules.map((module, idx) => (
-            <Col xs={24} sm={12} lg={6} key={idx}>
-              <Card
-                style={{
-                  textAlign: 'center',
-                  borderRadius: 12,
-                  height: '100%'
-                }}
-              >
-                <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>
-                  {module.emoji}
-                </div>
-                <h3 style={{ color: '#1890ff', marginBottom: '1rem', fontSize: '1.1rem' }}>
-                  {module.title}
-                </h3>
-                <p style={{ color: '#666', lineHeight: 1.8 }}>
-                  {module.desc}
-                </p>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-      </section>
-
-      {/* Innovations Section */}
-      <section 
-        style={{ 
-          padding: '5rem 2rem', 
-          maxWidth: 1400, 
-          margin: '0 auto',
-          background: 'linear-gradient(135deg, #f5f8ff 0%, #f0f4ff 100%)'
-        }}
-      >
-        <h2 style={{ textAlign: 'center', fontSize: '2.5rem', marginBottom: '1rem', color: '#001529' }}>
-          Key Innovations
-        </h2>
-        <p style={{ textAlign: 'center', color: '#666', fontSize: '1.2rem', marginBottom: '3rem' }}>
-          What makes FalsePass Hunter different from traditional anomaly detection
-        </p>
-        <Row gutter={[24, 24]}>
-          {innovations.map((innovation) => (
-            <Col xs={24} sm={12} key={innovation.num}>
-              <div style={{ display: 'flex', gap: '1rem', padding: '1.5rem', background: 'white', borderRadius: 8, borderLeft: '4px solid #722ed1', boxShadow: '0 2px 8px rgba(0,0,0,0.08)', transition: 'all 0.3s' }}>
-                <div style={{
-                  background: 'linear-gradient(135deg, #722ed1 0%, #a855f7 100%)',
-                  color: 'white',
-                  width: 40,
-                  height: 40,
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  fontWeight: 'bold',
-                  flexShrink: 0
-                }}>
-                  {innovation.num}
-                </div>
-                <div>
-                  <h4 style={{ color: '#001529', marginBottom: '0.5rem' }}>
-                    {innovation.title}
-                  </h4>
-                  <p style={{ color: '#666', fontSize: '0.95rem', margin: 0 }}>
-                    {innovation.desc}
-                  </p>
-                </div>
-              </div>
-            </Col>
-          ))}
-        </Row>
-      </section>
-
-      {/* Dashboard Preview Section */}
-      <section 
-        style={{ 
-          padding: '5rem 2rem', 
-          maxWidth: 1400, 
-          margin: '0 auto',
-          background: 'linear-gradient(135deg, #0c4a6e 0%, #0284c7 100%)',
-          color: 'white'
-        }}
-      >
-        <h2 style={{ textAlign: 'center', fontSize: '2.5rem', marginBottom: '1rem', color: 'white' }}>
-          Live Dashboard Preview
-        </h2>
-        <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.9)', fontSize: '1.2rem', marginBottom: '3rem' }}>
-          Real-time monitoring of test credibility across all production lines
-        </p>
-        
-        <Card style={{ borderRadius: 12, padding: '2rem', background: 'white', marginTop: '2rem' }}>
-          <Row gutter={[24, 24]} style={{ marginBottom: '2rem' }}>
-            {stats.map((stat, idx) => (
-              <Col xs={24} sm={12} lg={6} key={idx}>
-                <Card 
-                  style={{ 
-                    textAlign: 'center',
-                    borderRadius: 8,
-                    background: idx === 0 ? 'linear-gradient(135deg, #f8f9ff 0%, #e8f4ff 100%)' 
-                               : idx === 1 ? 'linear-gradient(135deg, #fffbe6 0%, #ffe58f 100%)'
-                               : idx === 2 ? 'linear-gradient(135deg, #fff1f0 0%, #ffccc7 100%)'
-                               : 'linear-gradient(135deg, #f6ffed 0%, #d9f7be 100%)'
-                  }}
-                >
-                  <Statistic
-                    value={stat.value}
-                    title={stat.label}
-                    valueStyle={{ color: stat.color, fontSize: 28, fontWeight: 'bold' }}
-                  />
-                </Card>
+      {/* Stats Section */}
+      <section className="stats-section-fancy">
+        <div className="stats-container">
+          <Row gutter={[32, 32]} justify="center">
+            {stats.map((stat, i) => (
+              <Col xs={24} sm={12} lg={6} key={i}>
+                <StatCard {...stat} index={i} delay={i * 0.1} />
               </Col>
             ))}
           </Row>
-
-          <Row gutter={[32, 32]}>
-            <Col xs={24} lg={12}>
-              <h3 style={{ color: '#001529', marginBottom: '1rem' }}>🏭 Production Line Status</h3>
-              <Table
-                dataSource={lineData}
-                columns={tableColumns}
-                pagination={false}
-                rowKey="station"
-                size="small"
-              />
-            </Col>
-            <Col xs={24} lg={12}>
-              <h3 style={{ color: '#001529', marginBottom: '1rem' }}>🔧 Fixture Health</h3>
-              {fixtures.map((fixture, idx) => (
-                <div key={idx} style={{ marginBottom: '1.5rem' }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-                    <span style={{ color: '#333' }}>{fixture.name}</span>
-                    <span style={{ color: fixture.color, fontWeight: 600 }}>{fixture.status} ({fixture.health}%)</span>
-                  </div>
-                  <Progress percent={fixture.health} strokeColor={fixture.color} />
-                </div>
-              ))}
-            </Col>
-          </Row>
-        </Card>
+        </div>
       </section>
 
-      {/* Team Section */}
-      <section 
-        style={{ 
-          padding: '5rem 2rem', 
-          maxWidth: 1400, 
-          margin: '0 auto',
-          background: 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%)',
-          color: 'white',
-          textAlign: 'center'
-        }}
-      >
-        <h2 style={{ fontSize: '2.5rem', marginBottom: '1rem', color: 'white' }}>
-          FalsePass Hunter Team
-        </h2>
-        <p style={{ fontSize: '1.2rem', marginBottom: '2rem', opacity: 0.9 }}>
-          Dedicated to eliminating hidden quality issues in semiconductor testing
-        </p>
-        <p style={{ fontSize: '1.2rem' }}>
-          ✨ Combining AI, data science, and <span style={{ color: '#faad14', fontWeight: 'bold' }}>deep domain expertise</span> for test engineering excellence
-        </p>
+      {/* Problems Section */}
+      <section id="problems-section" className="problems-section-fancy">
+        <div className="section-container">
+          <motion.div
+            className="section-header"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <span className="section-tag">Why It Matters</span>
+            <Title className="section-title">
+              The Hidden Challenge in <span className="text-gradient">Quality Testing</span>
+            </Title>
+            <Paragraph className="section-desc">
+              Traditional testing catches failures. We catch what slips through.
+            </Paragraph>
+          </motion.div>
+
+          <Row gutter={[24, 24]}>
+            {problems.map((problem, i) => (
+              <Col xs={24} sm={12} lg={6} key={i}>
+                <FeatureCard {...problem} index={i} />
+              </Col>
+            ))}
+          </Row>
+        </div>
+      </section>
+
+      {/* Modules Section */}
+      <section className="modules-section-fancy">
+        <div className="section-container">
+          <motion.div
+            className="section-header"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <span className="section-tag">Our Solution</span>
+            <Title className="section-title">
+              Integrated <span className="text-gradient">Architecture</span>
+            </Title>
+            <Paragraph className="section-desc">
+              Four powerful modules working together to assess test credibility
+            </Paragraph>
+          </motion.div>
+
+          <Row gutter={[32, 32]}>
+            {modules.map((module, i) => (
+              <Col xs={24} sm={12} lg={6} key={i}>
+                <ModuleCard {...module} index={i} />
+              </Col>
+            ))}
+          </Row>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="cta-section-fancy">
+        <div className="cta-background">
+          <div className="cta-glow-1" />
+          <div className="cta-glow-2" />
+        </div>
+        <div className="cta-content">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+          >
+            <ThunderboltOutlined className="cta-icon" />
+            <Title className="cta-title">Ready to Transform Your Testing?</Title>
+            <Paragraph className="cta-desc">
+              Join the future of quality assurance with AI-powered false pass detection
+            </Paragraph>
+            <Button
+              type="primary"
+              size="large"
+              className="cta-button"
+              icon={<CloudSynchronizationOutlined />}
+              onClick={() => navigate('/dashboard')}
+            >
+              Launch Dashboard
+            </Button>
+          </motion.div>
+        </div>
       </section>
 
       {/* Footer */}
-      <footer style={{ background: '#001529', color: 'white', textAlign: 'center', padding: '2rem' }}>
-        <p style={{ margin: 0 }}>
-          © 2024 FalsePass Hunter AI | Powered by Advanced Quality Testing Intelligence
-        </p>
+      <footer className="home-footer-fancy">
+        <div className="footer-container">
+          <div className="footer-content">
+            <div className="footer-brand">
+              <span className="footer-logo">🔍</span>
+              <span className="footer-name">FalsePass Hunter AI</span>
+            </div>
+            <Divider type="vertical" className="footer-divider" />
+            <div className="footer-tagline">
+              Combining AI, data science, and deep domain expertise
+            </div>
+          </div>
+          <div className="footer-bottom">
+            <p>© 2026 Illusion-Breakers Team. All rights reserved.</p>
+          </div>
+        </div>
       </footer>
     </div>
   )

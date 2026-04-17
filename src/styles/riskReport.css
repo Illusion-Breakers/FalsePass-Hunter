@@ -1,0 +1,766 @@
+/**
+ * FalsePass Hunter AI - Risk Report 页面样式
+ */
+
+/* ============ 页面容器 ============ */
+.risk-report-page {
+  width: 100%;
+  min-height: 100vh;
+  background: linear-gradient(180deg, #fef2f2 0%, #ffffff 50%, #fff5f5 100%);
+  padding: 24px;
+}
+
+/* ============ 页面标题 ============ */
+.risk-header {
+  background: linear-gradient(135deg, #7f1d1d 0%, #dc2626 50%, #b91c1c 100%);
+  border-radius: 24px;
+  padding: 48px 40px;
+  margin-bottom: 32px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(220, 38, 38, 0.3);
+}
+
+.risk-header .header-content {
+  position: relative;
+  z-index: 2;
+  color: white;
+}
+
+.risk-header .header-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  padding: 8px 20px;
+  border-radius: 50px;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.risk-header h1 {
+  font-size: clamp(1.8rem, 4vw, 2.5rem);
+  font-weight: 800;
+  margin: 0 0 12px 0;
+  line-height: 1.2;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+}
+
+.risk-header p {
+  font-size: 1.1rem;
+  opacity: 0.95;
+  margin: 0;
+  max-width: 600px;
+}
+
+.risk-header .header-decoration {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.risk-header .header-glow {
+  position: absolute;
+  bottom: -30%;
+  right: -10%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  animation: riskGlow 8s ease-in-out infinite;
+}
+
+@keyframes riskGlow {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-20px, -20px) scale(1.1); }
+}
+
+.floating-risk-icon {
+  position: absolute;
+  top: 30px;
+  right: 40px;
+  font-size: 4rem;
+  opacity: 0.15;
+  animation: floatRisk 4s ease-in-out infinite;
+}
+
+@keyframes floatRisk {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(15deg); }
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, #fca5a5 0%, #ef4444 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============ 控制面板 ============ */
+.control-panel-card {
+  margin-bottom: 32px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.fancy-control-card {
+  border-radius: 20px;
+  border: 1px solid rgba(220, 38, 38, 0.15);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
+}
+
+.fancy-control-card .ant-card-head {
+  background: transparent;
+  border-bottom: none;
+  padding: 16px 24px !important;
+}
+
+.control-label {
+  color: #666;
+  font-size: 12px;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.sample-select {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.control-actions {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.control-actions .ant-btn {
+  border-radius: 8px;
+  font-weight: 600;
+}
+
+/* ============ 风险卡片区域 ============ */
+.risk-cards-section {
+  margin-bottom: 32px;
+}
+
+.risk-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.risk-level-card-wrapper {
+  perspective: 1000px;
+}
+
+.risk-level-card {
+  background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
+  border-radius: 20px;
+  padding: 28px 24px;
+  border: 2px solid rgba(220, 38, 38, 0.1);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: center;
+}
+
+.risk-level-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: var(--card-color);
+  background-size: 200% 100%;
+  animation: gradientShift 3s ease infinite;
+}
+
+.risk-level-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  border-color: var(--card-color);
+  box-shadow: 0 15px 50px rgba(220, 38, 38, 0.2);
+}
+
+.risk-level-card.main {
+  border-color: #ff4d4f;
+  background: linear-gradient(135deg, #fff1f0 0%, #fef2f2 100%);
+  box-shadow: 0 8px 30px rgba(255, 77, 79, 0.15);
+}
+
+.card-background-icon {
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  font-size: 8rem;
+  opacity: 0.05;
+  color: var(--card-color);
+}
+
+.card-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.card-icon {
+  font-size: 2rem;
+  color: var(--card-color);
+}
+
+.live-badge {
+  animation: pulseBadge 2s ease-in-out infinite;
+}
+
+@keyframes pulseBadge {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.card-title {
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+}
+
+.card-value {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.card-suffix {
+  font-size: 1.5rem;
+  color: #94a3b8;
+  margin-left: 4px;
+}
+
+.card-trend {
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-block;
+  background: rgba(0, 0, 0, 0.04);
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.card-glow {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.risk-level-card:hover .card-glow {
+  opacity: 1;
+}
+
+/* ============ 报告内容区域 ============ */
+.report-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* ============ 图表区域 ============ */
+.charts-section {
+  margin-bottom: 32px;
+}
+
+.fancy-card {
+  border-radius: 20px;
+  border: 1px solid rgba(220, 38, 38, 0.15);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
+}
+
+.fancy-card:hover {
+  box-shadow: 0 15px 50px rgba(220, 38, 38, 0.2);
+}
+
+.fancy-card .ant-card-head {
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.02) 0%, rgba(127, 29, 29, 0.02) 100%);
+  border-bottom: 2px solid rgba(220, 38, 38, 0.1);
+  padding: 20px 24px !important;
+}
+
+.card-title-fancy {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.risk-pie-container {
+  position: relative;
+  padding: 20px 0;
+}
+
+.pie-center-value {
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.center-value-number {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #ff4d4f;
+}
+
+.center-value-label {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 4px;
+}
+
+.trend-chart-container {
+  padding: 10px 0;
+}
+
+/* ============ Breakdown 区域 ============ */
+.breakdown-section {
+  margin-bottom: 32px;
+}
+
+.breakdown-progress-list {
+  padding: 16px 0;
+}
+
+.progress-card-item {
+  margin-bottom: 20px;
+}
+
+.progress-card-content {
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.progress-card-content::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, var(--progress-color, #ff4d4f) 0%, transparent 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.progress-card-item:hover .progress-card-content::before {
+  opacity: 1;
+}
+
+.progress-card-item:hover {
+  transform: translateX(5px);
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.progress-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.progress-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.progress-dot {
+  position: absolute;
+  right: 16px;
+  bottom: 8px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.progress-card-item:hover .progress-dot {
+  opacity: 1;
+  animation: dotPulse 2s ease-in-out infinite;
+}
+
+@keyframes dotPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.5; }
+}
+
+/* ============ Summary Card ============ */
+.summary-card {
+  min-height: 400px;
+}
+
+.summary-content {
+  padding: 16px 0;
+}
+
+.summary-item {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 12px;
+  margin-bottom: 12px;
+  transition: all 0.3s ease;
+}
+
+.summary-item:hover {
+  background: rgba(0, 0, 0, 0.05);
+  transform: translateX(5px);
+}
+
+.summary-item.critical {
+  border-left: 4px solid #ff4d4f;
+}
+
+.summary-item.high {
+  border-left: 4px solid #faad14;
+}
+
+.summary-item.medium {
+  border-left: 4px solid #ffd666;
+}
+
+.summary-icon {
+  font-size: 2rem;
+  flex-shrink: 0;
+}
+
+.summary-text {
+  flex: 1;
+}
+
+.summary-text strong {
+  display: block;
+  font-size: 0.95rem;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.summary-text p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.summary-status {
+  text-align: center;
+  padding-top: 16px;
+  margin-top: 16px;
+  border-top: 2px dashed rgba(0, 0, 0, 0.1);
+}
+
+.status-tag {
+  font-size: 14px;
+  padding: 6px 16px;
+}
+
+/* ============ Top Risk 区域 ============ */
+.top-risk-section {
+  margin-bottom: 32px;
+}
+
+.risk-items-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.risk-item-card {
+  perspective: 1000px;
+}
+
+.risk-item-inner {
+  background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
+  border-radius: 16px;
+  padding: 20px;
+  border: 2px solid rgba(220, 38, 38, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.risk-item-inner::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at top right, rgba(255, 77, 79, 0.05) 0%, transparent 50%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.risk-item-card:hover .risk-item-inner::after {
+  opacity: 1;
+}
+
+.risk-item-card:hover .risk-item-inner {
+  border-color: rgba(255, 77, 79, 0.3);
+  box-shadow: 0 10px 40px rgba(255, 77, 79, 0.15);
+}
+
+.risk-rank {
+  flex-shrink: 0;
+}
+
+.rank-emoji {
+  font-size: 2.5rem;
+}
+
+.risk-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.risk-test-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e293b;
+  font-family: monospace;
+  margin-bottom: 8px;
+}
+
+.risk-metrics {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.metric {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.metric-label {
+  font-size: 11px;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metric-value {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.risk-tags {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.impact-tag {
+  font-weight: 600;
+}
+
+/* ============ Actions 区域 ============ */
+.actions-section {
+  margin-bottom: 32px;
+}
+
+.fancy-timeline {
+  padding: 20px 0;
+}
+
+.timeline-item {
+  margin-bottom: 24px;
+}
+
+.timeline-content {
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 12px;
+  border-left: 4px solid currentColor;
+  transition: all 0.3s ease;
+}
+
+.timeline-item[data-color="red"] .timeline-content {
+  border-left-color: #ff4d4f;
+  background: rgba(255, 77, 79, 0.03);
+}
+
+.timeline-item[data-color="orange"] .timeline-content {
+  border-left-color: #faad14;
+  background: rgba(250, 173, 20, 0.03);
+}
+
+.timeline-item[data-color="blue"] .timeline-content {
+  border-left-color: #1890ff;
+  background: rgba(24, 144, 255, 0.03);
+}
+
+.timeline-item[data-color="green"] .timeline-content {
+  border-left-color: #52c41a;
+  background: rgba(82, 196, 26, 0.03);
+}
+
+.timeline-content:hover {
+  transform: translateX(5px);
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.timeline-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.timeline-header strong {
+  font-size: 1rem;
+  color: #1e293b;
+}
+
+.priority-tag {
+  font-weight: 600;
+}
+
+.timeline-list {
+  margin: 0;
+  padding-left: 20px;
+}
+
+.timeline-list li {
+  margin-bottom: 8px;
+  color: #64748b;
+  line-height: 1.6;
+}
+
+/* ============ System Status ============ */
+.system-status-alert {
+  max-width: 1200px;
+}
+
+.system-status-alert .ant-alert {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 4px 20px rgba(250, 173, 20, 0.2);
+}
+
+/* ============ Modal 样式 ============ */
+.modal-title-fancy {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.modal-report-content {
+  padding: 16px 0;
+}
+
+.report-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  font-size: 0.95rem;
+}
+
+.report-row.highlight {
+  background: rgba(255, 77, 79, 0.05);
+  padding: 16px;
+  border-radius: 12px;
+  margin: 16px 0;
+}
+
+.risk-score-display {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #ff4d4f;
+}
+
+/* ============ 工具类 ============ */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* ============ 响应式 ============ */
+@media (max-width: 768px) {
+  .risk-report-page {
+    padding: 16px;
+  }
+
+  .risk-header {
+    padding: 32px 24px;
+  }
+
+  .risk-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .floating-risk-icon {
+    display: none;
+  }
+
+  .risk-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .control-actions {
+    justify-content: flex-start;
+  }
+
+  .risk-item-inner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .risk-tags {
+    flex-direction: row;
+  }
+}
