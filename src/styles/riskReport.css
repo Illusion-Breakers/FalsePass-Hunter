@@ -1,104 +1,91 @@
 /**
  * FalsePass Hunter AI - Risk Report 页面样式
+ * Professional Enterprise Dark Theme
  */
 
 /* ============ 页面容器 ============ */
 .risk-report-page {
   width: 100%;
   min-height: 100vh;
-  background: linear-gradient(180deg, #fef2f2 0%, #ffffff 50%, #fff5f5 100%);
+  background: linear-gradient(180deg, #0a0e1a 0%, #111827 50%, #0f172a 100%);
   padding: 24px;
 }
 
 /* ============ 页面标题 ============ */
-.risk-header {
-  background: linear-gradient(135deg, #7f1d1d 0%, #dc2626 50%, #b91c1c 100%);
-  border-radius: 24px;
-  padding: 48px 40px;
-  margin-bottom: 32px;
+.page-header-fancy {
+  position: relative;
+  background: linear-gradient(135deg, #1e3a5f 0%, #0c4a6e 100%);
+  border-radius: 16px;
+  padding: 36px 32px;
+  margin-bottom: 24px;
   overflow: hidden;
-  box-shadow: 0 20px 60px rgba(220, 38, 38, 0.3);
+  box-shadow: 0 8px 30px rgba(14, 116, 144, 0.25);
 }
 
-.risk-header .header-content {
+.header-content {
   position: relative;
   z-index: 2;
   color: white;
 }
 
-.risk-header .header-badge {
+.header-badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  padding: 8px 20px;
-  border-radius: 50px;
-  font-size: 14px;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 6px 16px;
+  border-radius: 100px;
+  font-size: 12px;
   font-weight: 600;
-  margin-bottom: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  letter-spacing: 1.2px;
+  margin-bottom: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
-.risk-header h1 {
-  font-size: clamp(1.8rem, 4vw, 2.5rem);
-  font-weight: 800;
-  margin: 0 0 12px 0;
-  line-height: 1.2;
-  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+.page-header-fancy h1 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  margin: 0 0 10px 0;
+  line-height: 1.25;
 }
 
-.risk-header p {
-  font-size: 1.1rem;
-  opacity: 0.95;
+.page-header-fancy p {
+  font-size: 0.95rem;
+  opacity: 0.85;
   margin: 0;
-  max-width: 600px;
+  max-width: 550px;
 }
 
-.risk-header .header-decoration {
+.header-glow {
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-}
-
-.risk-header .header-glow {
-  position: absolute;
-  bottom: -30%;
-  right: -10%;
-  width: 400px;
-  height: 400px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  top: -40%;
+  right: -15%;
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.12) 0%, transparent 70%);
   border-radius: 50%;
-  animation: riskGlow 8s ease-in-out infinite;
 }
 
-@keyframes riskGlow {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50% { transform: translate(-20px, -20px) scale(1.1); }
+.text-gradient {
+  background: linear-gradient(135deg, #7dd3fc 0%, #38bdf8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .floating-risk-icon {
   position: absolute;
   top: 30px;
   right: 40px;
-  font-size: 4rem;
+  font-size: 3rem;
   opacity: 0.15;
+  color: #ef4444;
   animation: floatRisk 4s ease-in-out infinite;
 }
 
 @keyframes floatRisk {
   0%, 100% { transform: translateY(0) rotate(0deg); }
   50% { transform: translateY(-20px) rotate(15deg); }
-}
-
-.text-gradient {
-  background: linear-gradient(135deg, #fca5a5 0%, #ef4444 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 /* ============ 控制面板 ============ */
@@ -110,10 +97,11 @@
 }
 
 .fancy-control-card {
-  border-radius: 20px;
-  border: 1px solid rgba(220, 38, 38, 0.15);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
-  background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
 }
 
 .fancy-control-card .ant-card-head {
@@ -123,7 +111,7 @@
 }
 
 .control-label {
-  color: #666;
+  color: rgba(255, 255, 255, 0.6);
   font-size: 12px;
   font-weight: 500;
   display: block;
@@ -133,6 +121,13 @@
 .sample-select {
   width: 100%;
   border-radius: 8px;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.sample-select .ant-select-selector {
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.9) !important;
 }
 
 .control-actions {
@@ -140,11 +135,6 @@
   justify-content: flex-end;
   flex-wrap: wrap;
   gap: 12px;
-}
-
-.control-actions .ant-btn {
-  border-radius: 8px;
-  font-weight: 600;
 }
 
 /* ============ 风险卡片区域 ============ */
@@ -165,13 +155,14 @@
 }
 
 .risk-level-card {
-  background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
-  border-radius: 20px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.04) 100%);
+  border-radius: 14px;
   padding: 28px 24px;
-  border: 2px solid rgba(220, 38, 38, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(10px);
   position: relative;
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.3s ease;
   text-align: center;
 }
 
@@ -181,22 +172,20 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
+  height: 3px;
   background: var(--card-color);
-  background-size: 200% 100%;
-  animation: gradientShift 3s ease infinite;
+  opacity: 0.5;
 }
 
 .risk-level-card:hover {
-  transform: translateY(-10px) scale(1.02);
-  border-color: var(--card-color);
-  box-shadow: 0 15px 50px rgba(220, 38, 38, 0.2);
+  transform: translateY(-5px);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
 }
 
 .risk-level-card.main {
-  border-color: #ff4d4f;
-  background: linear-gradient(135deg, #fff1f0 0%, #fef2f2 100%);
-  box-shadow: 0 8px 30px rgba(255, 77, 79, 0.15);
+  border-color: rgba(239, 68, 68, 0.4);
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.08) 0%, rgba(239, 68, 68, 0.12) 100%);
 }
 
 .card-background-icon {
@@ -231,34 +220,36 @@
 }
 
 .card-title {
-  font-size: 14px;
-  color: #64748b;
-  font-weight: 600;
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 500;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   margin-bottom: 12px;
 }
 
 .card-value {
-  font-size: 3rem;
-  font-weight: 800;
+  font-size: 2.5rem;
+  font-weight: 700;
   line-height: 1;
   margin-bottom: 8px;
+  color: #ffffff;
 }
 
 .card-suffix {
-  font-size: 1.5rem;
-  color: #94a3b8;
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.5);
   margin-left: 4px;
 }
 
 .card-trend {
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 12px;
+  font-weight: 500;
   display: inline-block;
-  background: rgba(0, 0, 0, 0.04);
+  background: rgba(255, 255, 255, 0.05);
   padding: 4px 10px;
   border-radius: 12px;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .card-glow {
@@ -267,7 +258,7 @@
   left: -50%;
   width: 200%;
   height: 200%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.05) 0%, transparent 70%);
   opacity: 0;
   transition: opacity 0.4s ease;
 }
@@ -288,31 +279,38 @@
 }
 
 .fancy-card {
-  border-radius: 20px;
-  border: 1px solid rgba(220, 38, 38, 0.15);
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
   overflow: hidden;
   transition: all 0.3s ease;
-  background: linear-gradient(135deg, #ffffff 0%, #fef2f2 100%);
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(10px);
 }
 
 .fancy-card:hover {
-  box-shadow: 0 15px 50px rgba(220, 38, 38, 0.2);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
 }
 
 .fancy-card .ant-card-head {
-  background: linear-gradient(135deg, rgba(220, 38, 38, 0.02) 0%, rgba(127, 29, 29, 0.02) 100%);
-  border-bottom: 2px solid rgba(220, 38, 38, 0.1);
-  padding: 20px 24px !important;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 16px 20px !important;
 }
 
 .card-title-fancy {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #1e293b;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.card-title-fancy svg {
+  color: #60a5fa;
+  font-size: 16px;
 }
 
 .risk-pie-container {
@@ -331,14 +329,14 @@
 }
 
 .center-value-number {
-  font-size: 2.5rem;
-  font-weight: 800;
-  color: #ff4d4f;
+  font-size: 2rem;
+  font-weight: 700;
+  color: #ef4444;
 }
 
 .center-value-label {
   font-size: 12px;
-  color: #64748b;
+  color: rgba(255, 255, 255, 0.5);
   margin-top: 4px;
 }
 
@@ -361,10 +359,11 @@
 
 .progress-card-content {
   padding: 16px;
-  background: rgba(0, 0, 0, 0.02);
+  background: rgba(255, 255, 255, 0.02);
   border-radius: 12px;
   position: relative;
   overflow: hidden;
+  transition: all 0.3s ease;
 }
 
 .progress-card-content::before {
@@ -372,9 +371,9 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 4px;
+  width: 3px;
   height: 100%;
-  background: linear-gradient(180deg, var(--progress-color, #ff4d4f) 0%, transparent 100%);
+  background: var(--progress-color, #ef4444);
   opacity: 0;
   transition: opacity 0.3s ease;
 }
@@ -385,6 +384,7 @@
 
 .progress-card-item:hover {
   transform: translateX(5px);
+  background: rgba(255, 255, 255, 0.03);
 }
 
 .progress-header {
@@ -395,14 +395,15 @@
 }
 
 .progress-name {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  color: #1e293b;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .progress-value {
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
+  color: #ffffff;
 }
 
 .progress-dot {
@@ -428,7 +429,7 @@
 
 /* ============ Summary Card ============ */
 .summary-card {
-  min-height: 400px;
+  min-height: 350px;
 }
 
 .summary-content {
@@ -439,32 +440,34 @@
   display: flex;
   gap: 16px;
   padding: 16px;
-  background: rgba(0, 0, 0, 0.03);
+  background: rgba(255, 255, 255, 0.02);
   border-radius: 12px;
   margin-bottom: 12px;
   transition: all 0.3s ease;
 }
 
 .summary-item:hover {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.04);
   transform: translateX(5px);
 }
 
 .summary-item.critical {
-  border-left: 4px solid #ff4d4f;
+  border-left: 3px solid #ef4444;
 }
 
 .summary-item.high {
-  border-left: 4px solid #faad14;
+  border-left: 3px solid #f59e0b;
 }
 
 .summary-item.medium {
-  border-left: 4px solid #ffd666;
+  border-left: 3px solid #eab308;
 }
 
 .summary-icon {
-  font-size: 2rem;
+  font-size: 1.5rem;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
 }
 
 .summary-text {
@@ -473,27 +476,28 @@
 
 .summary-text strong {
   display: block;
-  font-size: 0.95rem;
-  color: #1e293b;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9);
   margin-bottom: 4px;
 }
 
 .summary-text p {
   margin: 0;
   font-size: 0.85rem;
-  color: #64748b;
+  color: rgba(255, 255, 255, 0.5);
 }
 
 .summary-status {
   text-align: center;
   padding-top: 16px;
   margin-top: 16px;
-  border-top: 2px dashed rgba(0, 0, 0, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
 }
 
 .status-tag {
-  font-size: 14px;
+  font-size: 12px;
   padding: 6px 16px;
+  font-weight: 600;
 }
 
 /* ============ Top Risk 区域 ============ */
@@ -513,14 +517,14 @@
 }
 
 .risk-item-inner {
-  background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%);
-  border-radius: 16px;
-  padding: 20px;
-  border: 2px solid rgba(220, 38, 38, 0.1);
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.03) 100%);
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
   display: flex;
   align-items: center;
-  gap: 20px;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  gap: 16px;
+  transition: all 0.3s ease;
   position: relative;
   overflow: hidden;
 }
@@ -532,9 +536,9 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: radial-gradient(circle at top right, rgba(255, 77, 79, 0.05) 0%, transparent 50%);
+  background: radial-gradient(circle at top right, rgba(239, 68, 68, 0.05) 0%, transparent 50%);
   opacity: 0;
-  transition: opacity 0.4s ease;
+  transition: opacity 0.3s ease;
 }
 
 .risk-item-card:hover .risk-item-inner::after {
@@ -542,16 +546,24 @@
 }
 
 .risk-item-card:hover .risk-item-inner {
-  border-color: rgba(255, 77, 79, 0.3);
-  box-shadow: 0 10px 40px rgba(255, 77, 79, 0.15);
+  border-color: rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
 }
 
 .risk-rank {
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
 }
 
 .rank-emoji {
-  font-size: 2.5rem;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .risk-info {
@@ -560,10 +572,10 @@
 }
 
 .risk-test-name {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: #1e293b;
-  font-family: monospace;
+  font-size: 1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  font-family: 'Fira Code', 'Consolas', monospace;
   margin-bottom: 8px;
 }
 
@@ -580,16 +592,16 @@
 }
 
 .metric-label {
-  font-size: 11px;
-  color: #94a3b8;
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.4);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .metric-value {
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: #1e293b;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .risk-tags {
@@ -601,6 +613,8 @@
 
 .impact-tag {
   font-weight: 600;
+  font-size: 11px;
+  padding: 2px 8px;
 }
 
 /* ============ Actions 区域 ============ */
@@ -609,44 +623,44 @@
 }
 
 .fancy-timeline {
-  padding: 20px 0;
+  padding: 16px 0;
 }
 
 .timeline-item {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .timeline-content {
-  padding: 20px;
-  background: rgba(0, 0, 0, 0.02);
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.02);
   border-radius: 12px;
-  border-left: 4px solid currentColor;
+  border-left: 3px solid currentColor;
   transition: all 0.3s ease;
 }
 
 .timeline-item[data-color="red"] .timeline-content {
-  border-left-color: #ff4d4f;
-  background: rgba(255, 77, 79, 0.03);
+  border-left-color: #ef4444;
+  background: rgba(239, 68, 68, 0.05);
 }
 
 .timeline-item[data-color="orange"] .timeline-content {
-  border-left-color: #faad14;
-  background: rgba(250, 173, 20, 0.03);
+  border-left-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.05);
 }
 
 .timeline-item[data-color="blue"] .timeline-content {
-  border-left-color: #1890ff;
-  background: rgba(24, 144, 255, 0.03);
+  border-left-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.05);
 }
 
 .timeline-item[data-color="green"] .timeline-content {
-  border-left-color: #52c41a;
-  background: rgba(82, 196, 26, 0.03);
+  border-left-color: #10b981;
+  background: rgba(16, 185, 129, 0.05);
 }
 
 .timeline-content:hover {
   transform: translateX(5px);
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(255, 255, 255, 0.04);
 }
 
 .timeline-header {
@@ -657,12 +671,15 @@
 }
 
 .timeline-header strong {
-  font-size: 1rem;
-  color: #1e293b;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 600;
 }
 
 .priority-tag {
   font-weight: 600;
+  font-size: 10px;
+  padding: 2px 8px;
 }
 
 .timeline-list {
@@ -671,9 +688,10 @@
 }
 
 .timeline-list li {
-  margin-bottom: 8px;
-  color: #64748b;
+  margin-bottom: 6px;
+  color: rgba(255, 255, 255, 0.6);
   line-height: 1.6;
+  font-size: 0.85rem;
 }
 
 /* ============ System Status ============ */
@@ -684,21 +702,101 @@
 .system-status-alert .ant-alert {
   border-radius: 12px;
   border: none;
-  box-shadow: 0 4px 20px rgba(250, 173, 20, 0.2);
+  box-shadow: 0 4px 20px rgba(245, 158, 11, 0.2);
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.system-status-alert .ant-alert-message {
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.system-status-alert .ant-alert-description {
+  color: rgba(255, 255, 255, 0.6);
 }
 
 /* ============ Modal 样式 ============ */
 .modal-title-fancy {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: #1e293b;
+  gap: 10px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.modal-title-fancy svg {
+  color: #60a5fa;
 }
 
 .modal-report-content {
   padding: 16px 0;
+}
+
+/* ========== Modal 深色主题覆盖 ========== */
+.risk-report-page .ant-modal {
+  background: #1e293b !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.risk-report-page .ant-modal-content {
+  background: #1e293b !important;
+  color: #f1f5f9 !important;
+}
+
+.risk-report-page .ant-modal-header {
+  background: #1e293b !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.risk-report-page .ant-modal-title {
+  color: #ffffff !important;
+}
+
+.risk-report-page .ant-modal-close {
+  color: #ffffff;
+}
+
+.risk-report-page .ant-modal-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Modal 内部所有文本元素 */
+.risk-report-page .ant-modal *,
+.risk-report-page .ant-modal-content *,
+.risk-report-page .modal-report-content * {
+  color: #f1f5f9 !important;
+}
+
+/* Modal 内部的 Divider */
+.risk-report-page .ant-modal .ant-divider {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Modal 内部的 Alert */
+.risk-report-page .ant-modal .ant-alert {
+  background: rgba(239, 68, 68, 0.1) !important;
+  border: 1px solid rgba(239, 68, 68, 0.3) !important;
+}
+
+.risk-report-page .ant-modal .ant-alert-message {
+  color: #fca5a5 !important;
+}
+
+.risk-report-page .ant-modal .ant-alert-description {
+  color: #fecaca !important;
+}
+
+/* Modal 内部的 Tag */
+.risk-report-page .ant-modal .ant-tag {
+  background: rgba(239, 68, 68, 0.2) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+  color: #fca5a5 !important;
+}
+
+/* Modal 内部的 strong */
+.risk-report-page .ant-modal strong {
+  color: #ffffff !important;
 }
 
 .report-row {
@@ -706,20 +804,22 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 0;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.8);
 }
 
 .report-row.highlight {
-  background: rgba(255, 77, 79, 0.05);
+  background: rgba(239, 68, 68, 0.1);
   padding: 16px;
   border-radius: 12px;
   margin: 16px 0;
+  border: 1px solid rgba(239, 68, 68, 0.2);
 }
 
 .risk-score-display {
   font-size: 1.5rem;
-  font-weight: 800;
-  color: #ff4d4f;
+  font-weight: 700;
+  color: #ef4444;
 }
 
 /* ============ 工具类 ============ */
@@ -735,11 +835,11 @@
     padding: 16px;
   }
 
-  .risk-header {
-    padding: 32px 24px;
+  .page-header-fancy {
+    padding: 28px 20px;
   }
 
-  .risk-header h1 {
+  .page-header-fancy h1 {
     font-size: 1.5rem;
   }
 

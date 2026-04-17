@@ -1,6 +1,6 @@
 ﻿import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom'
 import { ConfigProvider, Layout, Menu } from 'antd'
-import { HomeOutlined, DashboardOutlined, LineChartOutlined, LinkOutlined, FileTextOutlined, DesktopOutlined } from '@ant-design/icons'
+import { HomeOutlined, DashboardOutlined, LineChartOutlined, LinkOutlined, FileTextOutlined, DesktopOutlined, SearchOutlined } from '@ant-design/icons'
 import './styles/variables.css'
 import './styles/global.css'
 import Home from './pages/Home'
@@ -14,7 +14,6 @@ const { Sider, Content, Header } = Layout
 
 function AppLayout({ children }) {
   const location = useLocation()
-  const isHome = location.pathname === '/' || location.pathname === '/home'
 
   const menuItems = [
     { key: '/', icon: <HomeOutlined />, label: <Link to="/">Home</Link> },
@@ -30,18 +29,18 @@ function AppLayout({ children }) {
       <Sider theme="dark" width={240} style={{ background: 'linear-gradient(180deg, #001529 0%, #0a2540 100%)', overflow: 'auto', height: '100vh', position: 'fixed', left: 0, top: 0 }}>
         <div style={{ height: 70, display: 'flex', alignItems: 'center', justifyContent: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
           <div style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: 20, fontWeight: 'bold', color: '#1890ff' }}>🔍</div>
+            <div style={{ fontSize: 20, fontWeight: 'bold', color: '#1890ff' }}><SearchOutlined /></div>
             <h2 style={{ margin: 0, fontSize: 14, color: 'white', marginTop: 4 }}>FalsePass Hunter</h2>
           </div>
         </div>
         <Menu theme="dark" mode="inline" selectedKeys={[location.pathname]} items={menuItems} style={{ marginTop: 16, border: 'none' }} />
       </Sider>
       <Layout style={{ marginLeft: 240 }}>
-        <Header style={{ background: 'linear-gradient(90deg, #ffffff 0%, #f5f5f5 100%)', padding: '0 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', height: 70, position: 'sticky', top: 0, zIndex: 999 }}>
-          <span style={{ fontSize: 18, fontWeight: 600, color: '#001529' }}>AI-Powered Quality Testing System</span>
-          <span style={{ fontSize: 12, color: '#999' }}>v2.3 | 2026-04-15</span>
+        <Header style={{ background: 'linear-gradient(90deg, #0f172a 0%, #1e293b 100%)', padding: '0 32px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 2px 8px rgba(0,0,0,0.3)', height: 70, position: 'sticky', top: 0, zIndex: 999 }}>
+          <span style={{ fontSize: 18, fontWeight: 600, color: '#e2e8f0' }}>AI-Powered Quality Testing System</span>
+          <span style={{ fontSize: 12, color: '#64748b' }}>v2.3 | 2026-04-15</span>
         </Header>
-        <Content style={{ margin: isHome ? 0 : 32, padding: isHome ? 0 : 32, background: isHome ? '#ffffff' : '#f0f2f5', borderRadius: isHome ? 0 : 8, overflowY: 'auto', minHeight: 'calc(100vh - 134px)', pointerEvents: 'auto' }}>
+        <Content style={{ margin: 0, padding: 0, background: '#0a0e1a', overflowY: 'auto', minHeight: 'calc(100vh - 70px)' }}>
           {children}
         </Content>
       </Layout>

@@ -1,10 +1,11 @@
 import { Card, Row, Col, Table, Tag, Button, Select, Progress, Alert, Timeline, Modal, Spin, Space, Tooltip, Statistic, Divider, Badge } from 'antd'
 import { PieChart, Pie, Cell, ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip as RechartTooltip, Legend, LineChart, Line, CartesianGrid, AreaChart, Area, RadialBarChart, RadialBar } from 'recharts'
-import { FileTextOutlined, DownloadOutlined, PrinterOutlined, ReloadOutlined, CheckCircleOutlined, WarningOutlined, ThunderboltOutlined, TrophyOutlined } from '@ant-design/icons'
+import { FileTextOutlined, DownloadOutlined, PrinterOutlined, ReloadOutlined, CheckCircleOutlined, WarningOutlined, ThunderboltOutlined, TrophyOutlined, BulbOutlined, LineChartOutlined, BarChartOutlined, RadarChartOutlined, ClockCircleOutlined, CalendarOutlined, ExperimentOutlined, SafetyOutlined } from '@ant-design/icons'
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import html2pdf from 'html2pdf.js'
-import './riskReport.css'
+import html2canvas from 'html2canvas'
+import { jsPDF } from 'jspdf'
+import '../styles/riskReport.css'
 
 // 风险等级卡片
 function RiskLevelCard({ title, value, suffix, color, icon, trend, delay, isMain = false }) {
@@ -13,8 +14,8 @@ function RiskLevelCard({ title, value, suffix, color, icon, trend, delay, isMain
       className="risk-level-card-wrapper"
       initial={{ opacity: 0, y: 50 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay, duration: 0.6 }}
-      whileHover={{ y: -10, scale: 1.02 }}
+      transition={{ delay, duration: 0.4 }}
+      whileHover={{ y: -5 }}
     >
       <div className={`risk-level-card ${isMain ? 'main' : ''}`} style={{ '--card-color': color }}>
         <div className="card-background-icon">{icon}</div>
@@ -27,7 +28,7 @@ function RiskLevelCard({ title, value, suffix, color, icon, trend, delay, isMain
           {value}<span className="card-suffix">{suffix}</span>
         </div>
         {trend && (
-          <div className="card-trend" style={{ color: trend > 0 ? '#ff4d4f' : '#52c41a' }}>
+          <div className="card-trend" style={{ color: trend > 0 ? '#ef4444' : '#10b981' }}>
             {trend > 0 ? '↑' : '↓'} {Math.abs(trend)}% vs yesterday
           </div>
         )}
@@ -39,14 +40,14 @@ function RiskLevelCard({ title, value, suffix, color, icon, trend, delay, isMain
 
 // 进度条卡片
 function ProgressCard({ name, value, index }) {
-  const color = value >= 80 ? '#ff4d4f' : value >= 60 ? '#faad14' : '#52c41a'
+  const color = value >= 80 ? '#ef4444' : value >= 60 ? '#f59e0b' : '#10b981'
 
   return (
     <motion.div
       className="progress-card-item"
       initial={{ opacity: 0, x: -30 }}
       animate={{ opacity: 1, x: 0 }}
-      transition={{ delay: index * 0.1, duration: 0.5 }}
+      transition={{ delay: index * 0.1, duration: 0.4 }}
       whileHover={{ x: 5 }}
     >
       <div className="progress-card-content">
@@ -57,7 +58,7 @@ function ProgressCard({ name, value, index }) {
         <Progress
           percent={value}
           strokeColor={color}
-          trailColor="rgba(0,0,0,0.05)"
+          trailColor="rgba(255,255,255,0.1)"
           showInfo={false}
           size={{ height: 8 }}
         />
@@ -69,8 +70,8 @@ function ProgressCard({ name, value, index }) {
 
 // 风险项卡片
 function RiskItemCard({ item, index }) {
-  const medals = ['🥇', '🥈', '🥉']
-  const medalColors = { Critical: '#ff4d4f', High: '#faad14', Medium: '#ffd666', Low: '#52c41a' }
+  const rankIcons = [<TrophyOutlined key="1" style={{ color: '#fbbf24' }} />, <TrophyOutlined key="2" style={{ color: '#94a3b8' }} />, <TrophyOutlined key="3" style={{ color: '#b45309' }} />]
+  const impactColors = { Critical: '#ef4444', High: '#f59e0b', Medium: '#eab308', Low: '#10b981' }
 
   return (
     <motion.div
@@ -82,7 +83,7 @@ function RiskItemCard({ item, index }) {
     >
       <div className="risk-item-inner">
         <div className="risk-rank">
-          <span className="rank-emoji">{item.rank <= 3 ? medals[item.rank - 1] : `#${item.rank}`}</span>
+          <span className="rank-emoji">{item.rank <= 3 ? rankIcons[item.rank - 1] : `#${item.rank}`}</span>
         </div>
         <div className="risk-info">
           <div className="risk-test-name">{item.test}</div>
@@ -91,7 +92,7 @@ function RiskItemCard({ item, index }) {
               <span className="metric-label">Contribution</span>
               <Progress
                 percent={item.contribution}
-                strokeColor="#ff4d4f"
+                strokeColor="#ef4444"
                 trailColor="rgba(0,0,0,0.05)"
                 showInfo={false}
                 size={{ height: 6 }}
@@ -105,8 +106,8 @@ function RiskItemCard({ item, index }) {
           </div>
         </div>
         <div className="risk-tags">
-          <Tag color={medalColors[item.impact]} className="impact-tag">{item.impact}</Tag>
-          <Tag color={item.action === 'Retest' ? '#ff4d4f' : item.action === 'Inspect' ? '#faad14' : '#1890ff'}>
+          <Tag color={impactColors[item.impact]} className="impact-tag">{item.impact}</Tag>
+          <Tag color={item.action === 'Retest' ? '#ef4444' : item.action === 'Inspect' ? '#f59e0b' : '#3b82f6'}>
             {item.action}
           </Tag>
         </div>
@@ -146,14 +147,14 @@ function RiskReport() {
     { rank: 4, test: 'CONT-01', contribution: 15, confidence: 76, action: 'Clean', impact: 'Low' },
   ]
 
-  // 动态更新数据
+  // 动态更新数据 - 优化性能
   useEffect(() => {
     const interval = setInterval(() => {
       setRiskData(prev => {
         const newValue = Math.min(99, Math.max(50, prev[0].value + Math.floor((Math.random() - 0.5) * 10)))
         return [{ name: 'Risk', value: newValue }, { name: 'Safe', value: 100 - newValue }]
       })
-    }, 5000)
+    }, 8000)
     return () => clearInterval(interval)
   }, [])
 
@@ -181,15 +182,53 @@ function RiskReport() {
       return
     }
 
-    const opt = {
-      margin: 10,
-      filename: `risk-report-${selectedSN}-${new Date().getTime()}.pdf`,
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { orientation: 'portrait', unit: 'mm', format: 'a4' }
-    }
+    // 确保内容可见 - 滚动到视图
+    element.scrollIntoView({ behavior: 'auto', block: 'start' })
 
-    html2pdf().set(opt).from(element).save()
+    // 等待 500ms 确保内容完全渲染
+    setTimeout(() => {
+      // 使用 html2canvas 直接截图
+      html2canvas(element, {
+        scale: 1,
+        useCORS: true,
+        backgroundColor: '#0f172a',
+        logging: false,
+        allowTaint: true,
+        windowWidth: 1200,
+        windowHeight: 1600
+      }).then(canvas => {
+        // 将 canvas 添加到 PDF
+        const imgData = canvas.toDataURL('image/jpeg', 0.98)
+        const pdf = new jsPDF({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: 'a4',
+          compress: true
+        })
+
+        const imgWidth = 210 // A4 width in mm
+        const pageHeight = 297 // A4 height in mm
+        const imgHeight = (canvas.height * imgWidth) / canvas.width
+        let heightLeft = imgHeight
+        let position = 0
+
+        pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight)
+        heightLeft -= pageHeight
+
+        // 添加新页面如果需要
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight
+          pdf.addPage()
+          pdf.addImage(imgData, 'JPEG', 0, position, imgWidth, imgHeight)
+          heightLeft -= pageHeight
+        }
+
+        pdf.save(`risk-report-${selectedSN}-${new Date().getTime()}.pdf`)
+      }).catch(err => {
+        console.error('PDF export error:', err)
+        alert('Export failed: ' + err.message)
+      })
+    }, 500)
   }
 
   const topColumns = [
@@ -198,11 +237,14 @@ function RiskReport() {
       dataIndex: 'rank',
       key: 'rank',
       width: 60,
-      render: (rank) => (
-        <Tag color={rank === 1 ? 'red' : rank === 2 ? 'orange' : rank === 3 ? 'blue' : 'default'}>
-          {rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`}
-        </Tag>
-      )
+      render: (rank) => {
+        const rankIcons = ['🥇', '🥈', '🥉']
+        return (
+          <Tag color={rank === 1 ? 'red' : rank === 2 ? 'orange' : rank === 3 ? 'blue' : 'default'}>
+            {rank <= 3 ? rankIcons[rank - 1] : `#${rank}`}
+          </Tag>
+        )
+      }
     },
     {
       title: 'Test Item',
@@ -242,7 +284,7 @@ function RiskReport() {
     <div className="risk-report-page">
       {/* Header */}
       <motion.div
-        className="page-header-fancy risk-header"
+        className="page-header-fancy"
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -273,7 +315,7 @@ function RiskReport() {
         </div>
         <div className="header-decoration">
           <div className="header-glow" />
-          <div className="floating-risk-icon">⚠️</div>
+          <div className="floating-risk-icon"><WarningOutlined /></div>
         </div>
       </motion.div>
 
@@ -343,7 +385,7 @@ function RiskReport() {
             title="Current Risk Score"
             value={riskData[0].value}
             suffix="/100"
-            color="#ff4d4f"
+            color="#ef4444"
             icon={<WarningOutlined />}
             trend={5}
             delay={0}
@@ -353,7 +395,7 @@ function RiskReport() {
             title="Failure Rate"
             value={3.5}
             suffix="%"
-            color="#faad14"
+            color="#f59e0b"
             icon={<ThunderboltOutlined />}
             trend={3}
             delay={0.1}
@@ -362,7 +404,7 @@ function RiskReport() {
             title="Suspicious Items"
             value={8}
             suffix=""
-            color="#1890ff"
+            color="#3b82f6"
             icon={<TrophyOutlined />}
             delay={0.2}
           />
@@ -370,7 +412,7 @@ function RiskReport() {
             title="Confidence Level"
             value={94}
             suffix="%"
-            color="#52c41a"
+            color="#10b981"
             icon={<CheckCircleOutlined />}
             trend={-2}
             delay={0.3}
@@ -387,13 +429,13 @@ function RiskReport() {
               <motion.div
                 initial={{ opacity: 0, x: -50 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.6, duration: 0.6 }}
+                transition={{ delay: 0.6, duration: 0.4 }}
               >
                 <Card
                   className="fancy-card"
                   title={
                     <div className="card-title-fancy">
-                      <span>🎯 Overall Risk Score</span>
+                      <BulbOutlined /> Overall Risk Score
                     </div>
                   }
                 >
@@ -408,10 +450,10 @@ function RiskReport() {
                           endAngle={0}
                           dataKey="value"
                           animationBegin={0}
-                          animationDuration={800}
+                          animationDuration={600}
                         >
-                          <Cell fill="#ff4d4f" />
-                          <Cell fill="#f0f0f0" />
+                          <Cell fill="#ef4444" />
+                          <Cell fill="#334155" />
                         </Pie>
                       </PieChart>
                     </ResponsiveContainer>
@@ -428,13 +470,13 @@ function RiskReport() {
               <motion.div
                 initial={{ opacity: 0, x: 50 }}
                 animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.7, duration: 0.6 }}
+                transition={{ delay: 0.7, duration: 0.4 }}
               >
                 <Card
                   className="fancy-card"
                   title={
                     <div className="card-title-fancy">
-                      <span>📈 7-Day Risk Trend</span>
+                      <LineChartOutlined /> 7-Day Risk Trend
                     </div>
                   }
                 >
@@ -443,21 +485,21 @@ function RiskReport() {
                       <AreaChart data={historicalTrend} margin={{ top: 5, right: 30, left: 0, bottom: 5 }}>
                         <defs>
                           <linearGradient id="colorRisk" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#ff4d4f" stopOpacity={0.3} />
-                            <stop offset="95%" stopColor="#ff4d4f" stopOpacity={0} />
+                            <stop offset="5%" stopColor="#ef4444" stopOpacity={0.3} />
+                            <stop offset="95%" stopColor="#ef4444" stopOpacity={0} />
                           </linearGradient>
                         </defs>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" vertical={false} />
-                        <XAxis dataKey="date" stroke="#999" style={{ fontSize: 12 }} />
-                        <YAxis stroke="#999" />
+                        <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.1)" vertical={false} />
+                        <XAxis dataKey="date" stroke="rgba(255,255,255,0.5)" style={{ fontSize: 12 }} />
+                        <YAxis stroke="rgba(255,255,255,0.5)" />
                         <RechartTooltip
-                          contentStyle={{ borderRadius: 12, boxShadow: '0 4px 20px rgba(0,0,0,0.15)', border: 'none' }}
+                          contentStyle={{ borderRadius: 12, boxShadow: '0 4px 20px rgba(0,0,0,0.3)', border: 'none', background: 'rgba(17, 24, 39, 0.95)', color: '#fff' }}
                         />
                         <Legend />
                         <Area
                           type="monotone"
                           dataKey="riskScore"
-                          stroke="#ff4d4f"
+                          stroke="#ef4444"
                           strokeWidth={3}
                           fill="url(#colorRisk)"
                           name="Risk Score"
@@ -465,7 +507,7 @@ function RiskReport() {
                         <Line
                           type="monotone"
                           dataKey="failureRate"
-                          stroke="#faad14"
+                          stroke="#f59e0b"
                           strokeWidth={3}
                           name="Failure Rate (%)"
                           dot={{ r: 4 }}
@@ -486,13 +528,13 @@ function RiskReport() {
               <motion.div
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8, duration: 0.6 }}
+                transition={{ delay: 0.8, duration: 0.4 }}
               >
                 <Card
                   className="fancy-card"
                   title={
                     <div className="card-title-fancy">
-                      <span>📊 Risk Breakdown Analysis</span>
+                      <RadarChartOutlined /> Risk Breakdown Analysis
                     </div>
                   }
                 >
@@ -509,40 +551,40 @@ function RiskReport() {
               <motion.div
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.9, duration: 0.6 }}
+                transition={{ delay: 0.9, duration: 0.4 }}
               >
                 <Card
                   className="fancy-card summary-card"
                   title={
                     <div className="card-title-fancy">
-                      <span>💡 Analysis Summary</span>
+                      <BulbOutlined /> Analysis Summary
                     </div>
                   }
                 >
                   <div className="summary-content">
                     <div className="summary-item critical">
-                      <div className="summary-icon">🔴</div>
+                      <div className="summary-icon"><WarningOutlined style={{ color: '#ef4444' }} /></div>
                       <div className="summary-text">
                         <strong>Critical Issues</strong>
                         <p>1 item requires immediate attention</p>
                       </div>
                     </div>
                     <div className="summary-item high">
-                      <div className="summary-icon">🟠</div>
+                      <div className="summary-icon"><WarningOutlined style={{ color: '#f59e0b' }} /></div>
                       <div className="summary-text">
                         <strong>High Priority</strong>
                         <p>2 items need inspection within 24 hours</p>
                       </div>
                     </div>
                     <div className="summary-item medium">
-                      <div className="summary-icon">🟡</div>
+                      <div className="summary-icon"><WarningOutlined style={{ color: '#eab308' }} /></div>
                       <div className="summary-text">
                         <strong>Medium Priority</strong>
                         <p>3 items require review</p>
                       </div>
                     </div>
                     <div className="summary-status">
-                      <Tag color="red" className="status-tag">⚠️ HIGH RISK STATE</Tag>
+                      <Tag color="red" className="status-tag"><WarningOutlined /> HIGH RISK STATE</Tag>
                     </div>
                   </div>
                 </Card>
@@ -556,14 +598,14 @@ function RiskReport() {
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.0, duration: 0.6 }}
+            transition={{ delay: 1.0, duration: 0.4 }}
           >
             <Card
               className="fancy-card"
               title={
                 <div className="card-title-fancy">
-                  <span>🔴 Top Risk Items</span>
-                  <Badge count={topRiskItems.length} style={{ backgroundColor: '#ff4d4f' }} />
+                  <WarningOutlined /> Top Risk Items
+                  <Badge count={topRiskItems.length} style={{ backgroundColor: '#ef4444' }} />
                 </div>
               }
             >
@@ -581,13 +623,13 @@ function RiskReport() {
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.1, duration: 0.6 }}
+            transition={{ delay: 1.1, duration: 0.4 }}
           >
             <Card
               className="fancy-card"
               title={
                 <div className="card-title-fancy">
-                  <span>💡 Recommended Actions & Timeline</span>
+                  <BulbOutlined /> Recommended Actions & Timeline
                 </div>
               }
             >
@@ -595,7 +637,7 @@ function RiskReport() {
                 <Timeline.Item color="red" className="timeline-item">
                   <div className="timeline-content">
                     <div className="timeline-header">
-                      <strong>🔴 Immediate Actions (Now)</strong>
+                      <strong><WarningOutlined /> Immediate Actions (Now)</strong>
                       <Tag color="red" className="priority-tag">CRITICAL</Tag>
                     </div>
                     <ul className="timeline-list">
@@ -609,7 +651,7 @@ function RiskReport() {
                 <Timeline.Item color="orange" className="timeline-item">
                   <div className="timeline-content">
                     <div className="timeline-header">
-                      <strong>🟡 Short-term Actions (24 hours)</strong>
+                      <strong><WarningOutlined /> Short-term Actions (24 hours)</strong>
                       <Tag color="orange" className="priority-tag">HIGH</Tag>
                     </div>
                     <ul className="timeline-list">
@@ -623,7 +665,7 @@ function RiskReport() {
                 <Timeline.Item color="blue" className="timeline-item">
                   <div className="timeline-content">
                     <div className="timeline-header">
-                      <strong>🔵 Medium-term Actions (3 days)</strong>
+                      <strong><ClockCircleOutlined /> Medium-term Actions (3 days)</strong>
                       <Tag color="blue" className="priority-tag">MEDIUM</Tag>
                     </div>
                     <ul className="timeline-list">
@@ -636,7 +678,7 @@ function RiskReport() {
                 <Timeline.Item color="green" className="timeline-item">
                   <div className="timeline-content">
                     <div className="timeline-header">
-                      <strong>🟢 Long-term Actions (this week)</strong>
+                      <strong><CheckCircleOutlined /> Long-term Actions (this week)</strong>
                       <Tag color="green" className="priority-tag">LOW</Tag>
                     </div>
                     <ul className="timeline-list">
@@ -657,7 +699,7 @@ function RiskReport() {
           className="system-status-alert"
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2, duration: 0.6 }}
+          transition={{ delay: 1.2, duration: 0.4 }}
         >
           <Alert
             type="warning"

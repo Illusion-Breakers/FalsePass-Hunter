@@ -1,27 +1,24 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { Button, Row, Col, Card, Statistic, Space, Alert, Table, Progress, Typography, Divider } from 'antd'
-import { ArrowRightOutlined, FastForwardOutlined, AlertOutlined, RocketOutlined, SafetyOutlined, ThunderboltOutlined, CloudSynchronizationOutlined } from '@ant-design/icons'
-import { useState, useEffect, useRef } from 'react'
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
-import './home.css'
+import { Button, Row, Col, Typography, Divider } from 'antd'
+import { ArrowRightOutlined, FastForwardOutlined, RocketOutlined, ThunderboltOutlined, CloudOutlined, CheckCircleOutlined, BarChartOutlined, FileTextOutlined, DashboardOutlined } from '@ant-design/icons'
+import { useState, useRef } from 'react'
+import { motion, useScroll, useTransform } from 'framer-motion'
+import '../styles/home.css'
 
 const { Title, Paragraph } = Typography
 
-// 浮动粒子背景组件
+// 粒子背景
 function ParticleBackground() {
-  const [particles, setParticles] = useState([])
-
-  useEffect(() => {
-    const newParticles = Array.from({ length: 50 }, (_, i) => ({
+  const [particles] = useState(() =>
+    Array.from({ length: 40 }, (_, i) => ({
       id: i,
       x: Math.random() * 100,
       y: Math.random() * 100,
-      size: Math.random() * 4 + 1,
-      duration: Math.random() * 20 + 10,
+      size: Math.random() * 3 + 1,
+      duration: Math.random() * 20 + 15,
       delay: Math.random() * 5,
     }))
-    setParticles(newParticles)
-  }, [])
+  )
 
   return (
     <div className="particle-container">
@@ -43,39 +40,18 @@ function ParticleBackground() {
   )
 }
 
-// 渐变网格背景
-function GradientGrid() {
-  return (
-    <div className="gradient-grid">
-      <div className="gradient-cell" style={{ '--x': 0, '--y': 0 }} />
-      <div className="gradient-cell" style={{ '--x': 1, '--y': 0 }} />
-      <div className="gradient-cell" style={{ '--x': 2, '--y': 0 }} />
-      <div className="gradient-cell" style={{ '--x': 3, '--y': 0 }} />
-      <div className="gradient-cell" style={{ '--x': 0, '--y': 1 }} />
-      <div className="gradient-cell" style={{ '--x': 1, '--y': 1 }} />
-      <div className="gradient-cell" style={{ '--x': 2, '--y': 1 }} />
-      <div className="gradient-cell" style={{ '--x': 3, '--y': 1 }} />
-      <div className="gradient-cell" style={{ '--x': 0, '--y': 2 }} />
-      <div className="gradient-cell" style={{ '--x': 1, '--y': 2 }} />
-      <div className="gradient-cell" style={{ '--x': 2, '--y': 2 }} />
-      <div className="gradient-cell" style={{ '--x': 3, '--y': 2 }} />
-    </div>
-  )
-}
-
-// 数据卡片组件
-function StatCard({ icon, value, label, color, delay }) {
+// 数据卡片
+function StatCard({ icon: Icon, value, label, color, delay }) {
   return (
     <motion.div
       className="stat-card-wrapper"
-      initial={{ opacity: 0, y: 50 }}
+      initial={{ opacity: 0, y: 30 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.6, delay }}
-      whileHover={{ scale: 1.05, y: -10 }}
+      transition={{ duration: 0.5, delay }}
     >
       <div className="stat-card-inner" style={{ '--primary-color': color }}>
-        <div className="stat-icon">{icon}</div>
+        <div className="stat-icon"><Icon /></div>
         <div className="stat-value">{value}</div>
         <div className="stat-label">{label}</div>
       </div>
@@ -83,27 +59,20 @@ function StatCard({ icon, value, label, color, delay }) {
   )
 }
 
-// 特性卡片组件
-function FeatureCard({ emoji, title, desc, color, index }) {
+// 特性卡片
+function FeatureCard({ icon: Icon, title, desc, color, index }) {
   return (
     <motion.div
       className="feature-card-wrapper"
-      initial={{ opacity: 0, y: 60 }}
+      initial={{ opacity: 0, y: 40 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.7, delay: index * 0.15 }}
-      whileHover={{ scale: 1.03, rotateY: 5 }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
     >
       <div className="feature-card" style={{ '--accent-color': color }}>
         <div className="feature-glow" />
         <div className="feature-content">
-          <motion.span
-            className="feature-emoji"
-            animate={{ scale: [1, 1.2, 1], rotate: [0, 10, -10, 0] }}
-            transition={{ duration: 3, repeat: Infinity }}
-          >
-            {emoji}
-          </motion.span>
+          <div className="feature-icon"><Icon /></div>
           <h3 className="feature-title">{title}</h3>
           <p className="feature-desc">{desc}</p>
           <div className="feature-line" />
@@ -113,24 +82,21 @@ function FeatureCard({ emoji, title, desc, color, index }) {
   )
 }
 
-// 模块卡片组件
-function ModuleCard({ emoji, title, desc, index }) {
+// 模块卡片
+function ModuleCard({ icon: Icon, title, desc, index }) {
   return (
     <motion.div
       className="module-card-wrapper"
-      initial={{ opacity: 0, scale: 0.8 }}
+      initial={{ opacity: 0, scale: 0.95 }}
       whileInView={{ opacity: 1, scale: 1 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.6, delay: index * 0.1 }}
-      whileHover={{ y: -15, boxShadow: '0 25px 50px rgba(24, 144, 255, 0.3)' }}
+      transition={{ duration: 0.5, delay: index * 0.1 }}
     >
       <div className="module-card">
-        <div className="module-emoji">{emoji}</div>
+        <div className="module-icon"><Icon /></div>
         <h3 className="module-title">{title}</h3>
         <p className="module-desc">{desc}</p>
-        <div className="module-arrow">
-          <ArrowRightOutlined />
-        </div>
+        <div className="module-arrow"><ArrowRightOutlined /></div>
       </div>
     </motion.div>
   )
@@ -141,29 +107,28 @@ function Home() {
   const containerRef = useRef(null)
   const { scrollYProgress } = useScroll({ target: containerRef })
 
-  const heroY = useTransform(scrollYProgress, [0, 0.2], [0, -100])
+  const heroY = useTransform(scrollYProgress, [0, 0.2], [0, -80])
   const heroOpacity = useTransform(scrollYProgress, [0, 0.2], [1, 0])
-  const scaleProgress = useTransform(scrollYProgress, [0, 0.3], [1, 1.1])
+
+  const stats = [
+    { value: '1,567', label: 'Samples Analyzed', color: '#3b82f6', icon: BarChartOutlined },
+    { value: '592', label: 'Parameters Tracked', color: '#8b5cf6', icon: DashboardOutlined },
+    { value: '94%', label: 'Detection Rate', color: '#10b981', icon: CheckCircleOutlined },
+    { value: '<1s', label: 'Response Time', color: '#f59e0b', icon: ThunderboltOutlined },
+  ]
 
   const problems = [
-    { emoji: '📉', title: 'Incomplete Coverage', desc: 'Test scripts may have gaps where boundary conditions are never truly validated.', color: '#ff4d4f' },
-    { emoji: '⚙️', title: 'Threshold Drift', desc: 'Threshold settings that are too wide allow anomalies to pass through.', color: '#ff7a45' },
-    { emoji: '🔧', title: 'Fixture Degradation', desc: 'Aging fixtures and worn probes cause contact instability.', color: '#faad14' },
-    { emoji: '🔄', title: 'Missing Feedback Loop', desc: 'Issues recurring at rework stations do not feed back into testing.', color: '#722ed1' },
+    { icon: FileTextOutlined, title: 'Incomplete Coverage', desc: 'Test scripts may have gaps where boundary conditions are never truly validated.', color: '#ef4444' },
+    { icon: ThunderboltOutlined, title: 'Threshold Drift', desc: 'Threshold settings that are too wide allow anomalies to pass through.', color: '#f59e0b' },
+    { icon: BarChartOutlined, title: 'Fixture Degradation', desc: 'Aging fixtures and worn probes cause contact instability.', color: '#f97316' },
+    { icon: DashboardOutlined, title: 'Missing Feedback Loop', desc: 'Issues recurring at rework stations do not feed back into testing.', color: '#8b5cf6' },
   ]
 
   const modules = [
-    { emoji: '📐', title: 'Drift Monitor', desc: 'Monitor test script deviations and threshold changes' },
-    { emoji: '🔗', title: 'Cross-Stage', desc: 'Correlate defects between production stages' },
-    { emoji: '📝', title: 'Log Analysis', desc: 'AI-powered intelligent log analysis' },
-    { emoji: '📊', title: 'Risk Report', desc: 'Comprehensive risk assessment reports' },
-  ]
-
-  const stats = [
-    { value: '1,567', label: 'Samples Analyzed', color: '#1890ff' },
-    { value: '592', label: 'Parameters Tracked', color: '#722ed1' },
-    { value: '94%', label: 'Detection Rate', color: '#52c41a' },
-    { value: '<1s', label: 'Response Time', color: '#faad14' },
+    { icon: BarChartOutlined, title: 'Drift Monitor', desc: 'Monitor test script deviations and threshold changes' },
+    { icon: DashboardOutlined, title: 'Cross-Stage', desc: 'Correlate defects between production stages' },
+    { icon: FileTextOutlined, title: 'Log Analysis', desc: 'AI-powered intelligent log analysis' },
+    { icon: ThunderboltOutlined, title: 'Risk Report', desc: 'Comprehensive risk assessment reports' },
   ]
 
   return (
@@ -171,26 +136,26 @@ function Home() {
       {/* Hero Section */}
       <section className="hero-section-fancy">
         <ParticleBackground />
-        <GradientGrid />
+        <div className="gradient-grid" />
 
         <motion.div
           className="hero-content"
-          style={{ y: heroY, opacity: heroOpacity, scale: scaleProgress }}
+          style={{ y: heroY, opacity: heroOpacity }}
         >
           <motion.div
             className="hero-badge"
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2, type: 'spring' }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
           >
-            <RocketOutlined /> AI-Powered Quality Testing
+            <RocketOutlined /> AI-POWERED QUALITY TESTING
           </motion.div>
 
           <motion.h1
             className="hero-title"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.8 }}
+            transition={{ delay: 0.4, duration: 0.7 }}
           >
             <span className="title-gradient">FalsePass</span>
             <br />
@@ -199,20 +164,20 @@ function Home() {
 
           <motion.p
             className="hero-subtitle"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6, duration: 0.8 }}
+            transition={{ delay: 0.6, duration: 0.7 }}
           >
             Detecting the undetectable — Finding false passes before they escape
           </motion.p>
 
           <motion.div
             className="hero-quote"
-            initial={{ opacity: 0, x: -50 }}
+            initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.8, duration: 0.8 }}
+            transition={{ delay: 0.8, duration: 0.7 }}
           >
-            <span className="quote-icon">"</span>
+            <span className="quote-mark">"</span>
             The most dangerous product is not the one that fails testing.
             <br />
             It is the one that has problems but passed testing anyway.
@@ -220,9 +185,9 @@ function Home() {
 
           <motion.div
             className="hero-buttons"
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1, duration: 0.8 }}
+            transition={{ delay: 1, duration: 0.7 }}
           >
             <Button
               type="primary"
@@ -257,8 +222,8 @@ function Home() {
         </motion.div>
 
         <div className="hero-wave">
-          <svg viewBox="0 0 1440 120" preserveAspectRatio="none">
-            <path d="M0,64 C288,120 576,0 864,64 C1152,128 1440,32 1440,32 L1440,120 L0,120 Z" fill="#ffffff" />
+          <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+            <path d="M0,50 C360,100 720,0 1080,50 C1260,75 1380,60 1440,50 L1440,100 L0,100 Z" fill="#111827" />
           </svg>
         </div>
       </section>
@@ -266,7 +231,7 @@ function Home() {
       {/* Stats Section */}
       <section className="stats-section-fancy">
         <div className="stats-container">
-          <Row gutter={[32, 32]} justify="center">
+          <Row gutter={[24, 24]} justify="center">
             {stats.map((stat, i) => (
               <Col xs={24} sm={12} lg={6} key={i}>
                 <StatCard {...stat} index={i} delay={i * 0.1} />
@@ -281,10 +246,10 @@ function Home() {
         <div className="section-container">
           <motion.div
             className="section-header"
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.6 }}
           >
             <span className="section-tag">Why It Matters</span>
             <Title className="section-title">
@@ -295,7 +260,7 @@ function Home() {
             </Paragraph>
           </motion.div>
 
-          <Row gutter={[24, 24]}>
+          <Row gutter={[20, 20]}>
             {problems.map((problem, i) => (
               <Col xs={24} sm={12} lg={6} key={i}>
                 <FeatureCard {...problem} index={i} />
@@ -310,10 +275,10 @@ function Home() {
         <div className="section-container">
           <motion.div
             className="section-header"
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.6 }}
           >
             <span className="section-tag">Our Solution</span>
             <Title className="section-title">
@@ -324,7 +289,7 @@ function Home() {
             </Paragraph>
           </motion.div>
 
-          <Row gutter={[32, 32]}>
+          <Row gutter={[20, 20]}>
             {modules.map((module, i) => (
               <Col xs={24} sm={12} lg={6} key={i}>
                 <ModuleCard {...module} index={i} />
@@ -342,10 +307,10 @@ function Home() {
         </div>
         <div className="cta-content">
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.6 }}
           >
             <ThunderboltOutlined className="cta-icon" />
             <Title className="cta-title">Ready to Transform Your Testing?</Title>
@@ -356,7 +321,7 @@ function Home() {
               type="primary"
               size="large"
               className="cta-button"
-              icon={<CloudSynchronizationOutlined />}
+              icon={<CloudOutlined />}
               onClick={() => navigate('/dashboard')}
             >
               Launch Dashboard
@@ -370,7 +335,7 @@ function Home() {
         <div className="footer-container">
           <div className="footer-content">
             <div className="footer-brand">
-              <span className="footer-logo">🔍</span>
+              <span className="footer-logo">◈</span>
               <span className="footer-name">FalsePass Hunter AI</span>
             </div>
             <Divider type="vertical" className="footer-divider" />

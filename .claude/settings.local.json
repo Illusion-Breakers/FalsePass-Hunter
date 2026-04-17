@@ -6,7 +6,10 @@
       "Bash(git add *)",
       "Bash(git commit *)",
       "Bash(git pull *)",
-      "Bash(curl -s http://localhost:3004 -o /dev/null)"
+      "Bash(curl -s http://localhost:3004 -o /dev/null)",
+      "Bash(pkill -f vite)",
+      "Bash(pkill -f node)",
+      "Bash(netstat -ano)"
     ]
   }
 }
